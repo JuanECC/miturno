@@ -1,300 +1,317 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Recepción e Informes</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="./rsc/css_recepcion.css">
-    
- 
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Recepción e Informes</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="./rsc/css_recepcion.css">
 </head>
 <body>
-    <body>
 
 <!-- ███ MENÚ DE NAVEGACIÓN ███ -->
 <nav class="navbar navbar-expand-lg navbar-light bg-light mb-4">
-    <div class="container-fluid">
-
-
+  <div class="container-fluid">
     <a class="navbar-brand fw-bold" href="recepcion.html">🏥 Recepción</a>
-
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" 
-            data-bs-target="#menu" aria-expanded="false">
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menu" aria-expanded="false">
       <span class="navbar-toggler-icon"></span>
     </button>
-
     <div class="collapse navbar-collapse" id="menu">
       <ul class="navbar-nav ms-auto">
-
-        <li class="nav-item">
-          <a class="nav-link" href="pantalla.html">🖥️ Pantalla de turnos</a>
-        </li>
-
-        <li class="nav-item">
-          <a class="nav-link" href="doctor.html">👨‍⚕️ Módulo Doctor</a>
-        </li>
-
-        <li class="nav-item">
-          <a class="nav-link" href="admin.html">⚙️ Administración</a>
-        </li>
-
-        <li class="nav-item">
-  <button id="darkModeBtn" class="btn btn-outline-light ms-3">🌙</button>
-</li>
-
+        <li class="nav-item"><a class="nav-link" href="pantalla.html">🖥️ Pantalla de turnos</a></li>
+        <li class="nav-item"><a class="nav-link" href="doctor.html">👨‍⚕️ Módulo Doctor</a></li>
+        <li class="nav-item"><a class="nav-link" href="admin.html">⚙️ Administración</a></li>
+        <li class="nav-item"><button id="darkModeBtn" class="btn btn-outline-light ms-3">🌙</button></li>
       </ul>
     </div>
-
   </div>
 </nav>
 <!-- ███ FIN DEL MENÚ ███ -->
 
-
-   
-
 <div class="container mt-4 mb-5 no-print">
-    
-    <ul class="nav nav-pills mb-3 justify-content-center" id="pills-tab" role="tablist">
-        <li class="nav-item">
-            <button class="nav-link active" id="pills-ingreso-tab" data-bs-toggle="pill" data-bs-target="#pills-ingreso" type="button">📝 Nuevo Ingreso</button>
-        </li>
-        <li class="nav-item">
-            <button class="nav-link" id="pills-informes-tab" data-bs-toggle="pill" data-bs-target="#pills-informes" type="button">🔍 Informes Familiares</button>
-        </li>
-    </ul>
 
-    <div class="tab-content" id="pills-tabContent">
-        
-        <div class="tab-pane fade show active" id="pills-ingreso">
-            <div class="card shadow-sm">
-                <div class="card-header bg-primary text-white text-center py-3"><h4 class="mb-0">ADMISIÓN Y TRIAJE</h4></div>
-                <div class="card-body p-4">
-                    <form id="triageForm">
-                        <h6 class="text-secondary border-bottom pb-2 mb-3">1. Identificación</h6>
-                        <div class="row mb-3">
-                            <div class="col-md-5"><label class="fw-bold">Nombre</label><input type="text" id="nombre" class="form-control" required></div>
-                            <div class="col-md-2"><label class="fw-bold">Edad</label><input type="number" id="edad" class="form-control" required></div>
-                            <div class="col-md-5"><label class="fw-bold">Especialidad</label>
-                                <select id="especialidad" class="form-select">
-                                    <option value="Medicina General">Medicina General</option>
-                                    <option value="Traumatología">Traumatología</option>
-                                    <option value="Cardiología">Cardiología</option>
-                                    <option value="Pediatría">Pediatría</option>
-                                    <option value="Ginecología">Ginecología</option>
-                                </select>
-                            </div>
-                        </div>
+  <!-- PESTAÑAS -->
+  <ul class="nav nav-pills mb-3 justify-content-center" id="pills-tab" role="tablist">
+    <li class="nav-item">
+      <button class="nav-link active" id="pills-ingreso-tab" data-bs-toggle="pill" data-bs-target="#pills-ingreso" type="button">📝 Nuevo Ingreso</button>
+    </li>
+    <li class="nav-item">
+      <button class="nav-link" id="pills-informes-tab" data-bs-toggle="pill" data-bs-target="#pills-informes" type="button">🔍 Informes Familiares</button>
+    </li>
+  </ul>
 
-                        <h6 class="text-primary border-bottom pb-2 mt-4 mb-3">2. Signos Vitales</h6>
-                        <div class="row g-2 bg-light p-3 rounded border mb-3">
-                            <div class="col-md-2"><span class="label-vital">T/A</span><input type="text" id="v_ta" class="form-control input-vital" placeholder="120/80"></div>
-                            <div class="col-md-2"><span class="label-vital">Temp</span><input type="number" id="v_temp" class="form-control input-vital" placeholder="36.5"></div>
-                            <div class="col-md-2"><span class="label-vital">F.C.</span><input type="number" id="v_fc" class="form-control input-vital" placeholder="80"></div>
-                            <div class="col-md-2"><span class="label-vital">SpO2</span><input type="number" id="v_spo2" class="form-control input-vital" placeholder="98"></div>
-                            <div class="col-md-2"><span class="label-vital">Glucosa</span><input type="number" id="v_glu" class="form-control input-vital"></div>
-                            <div class="col-md-2"><span class="label-vital">Peso</span><input type="number" id="v_peso" class="form-control input-vital"></div>
-                        </div>
+  <div class="tab-content" id="pills-tabContent">
 
-                        <div class="mb-3"><label class="fw-bold">Motivo</label><input type="text" id="motivo" class="form-control" required></div>
-                        
-                        <h6 class="text-danger border-bottom pb-2 mt-4 mb-2">3. Signos de Alarma</h6>
-                        <div class="row mb-3">
-                            <div class="col-md-4"><input type="checkbox" class="btn-check alarma-check" id="s1" value="Dificultad Respiratoria"><label class="btn btn-outline-secondary w-100" for="s1">Dificultad Respiratoria</label></div>
-                            <div class="col-md-4"><input type="checkbox" class="btn-check alarma-check" id="s2" value="Dolor Torácico"><label class="btn btn-outline-secondary w-100" for="s2">Dolor Torácico</label></div>
-                            <div class="col-md-4"><input type="checkbox" class="btn-check alarma-check" id="s3" value="Sangrado Activo"><label class="btn btn-outline-secondary w-100" for="s3">Sangrado Activo</label></div>
-                        </div>
-
-                        <div class="mb-3"><label>Antecedentes</label><textarea id="antecedentes" class="form-control" rows="2"></textarea></div>
-
-                        <hr class="my-4">
-                        <div class="d-grid gap-2">
-                            <button type="button" class="btn btn-nivel-1 priority-btn" onclick="registrarPaciente(1)">🔴 NIVEL 1 - RESUCITACIÓN</button>
-                            <button type="button" class="btn btn-nivel-2 priority-btn" onclick="registrarPaciente(2)">🟠 NIVEL 2 - EMERGENCIA</button>
-                            <button type="button" class="btn btn-nivel-3 priority-btn" onclick="registrarPaciente(3)">🟡 NIVEL 3 - URGENCIA</button>
-                            <button type="button" class="btn btn-nivel-4 priority-btn" onclick="registrarPaciente(4)">🟢 NIVEL 4 - MENOR</button>
-                            <button type="button" class="btn btn-nivel-5 priority-btn" onclick="registrarPaciente(5)">🔵 NIVEL 5 - NO URGENTE</button>
-                        </div>
-                    </form>
-                </div>
+    <!-- ▸ NUEVO INGRESO -->
+    <div class="tab-pane fade show active" id="pills-ingreso">
+      <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white text-center py-3"><h4 class="mb-0">ADMISIÓN Y TRIAJE</h4></div>
+        <div class="card-body p-4">
+          <form id="triageForm">
+            <!-- 1. IDENTIFICACIÓN -->
+            <h6 class="text-secondary border-bottom pb-2 mb-3">1. Identificación</h6>
+            <div class="row mb-3">
+              <div class="col-md-5"><label class="fw-bold">Nombre</label><input type="text" id="nombre" class="form-control" required></div>
+              <div class="col-md-2"><label class="fw-bold">Edad</label><input type="number" id="edad" class="form-control" required></div>
+              <div class="col-md-5"><label class="fw-bold">Especialidad</label>
+                <select id="especialidad" class="form-select">
+                  <option value="Medicina General">Medicina General</option>
+                  <option value="Traumatología">Traumatología</option>
+                  <option value="Cardiología">Cardiología</option>
+                  <option value="Pediatría">Pediatría</option>
+                  <option value="Ginecología">Ginecología</option>
+                </select>
+              </div>
             </div>
-        </div>
 
-        <div class="tab-pane fade" id="pills-informes">
-            <div class="card shadow">
-                <div class="card-header bg-success text-white">
-                    <h4 class="mb-0"><i class="bi bi-search"></i> Búsqueda de Pacientes</h4>
-                </div>
-                <div class="card-body p-5 text-center">
-                    <h5 class="mb-3">Ingrese el nombre del paciente para ver su estatus actual</h5>
-                    <div class="input-group input-group-lg mb-4">
-                        <input type="text" id="busquedaInforme" class="form-control" placeholder="Ej. Juan Pérez">
-                        <button class="btn btn-success" type="button" onclick="buscarInforme()">Buscar</button>
-                    </div>
-
-                    <div id="resultadoBusqueda" class="text-start mt-4">
-                        </div>
-                </div>
+            <!-- 2. SIGNOS VITALES -->
+            <h6 class="text-primary border-bottom pb-2 mt-4 mb-3">2. Signos Vitales</h6>
+            <div class="row g-2 bg-light p-3 rounded border mb-3">
+              <div class="col-md-2"><span class="label-vital">T/A</span><input type="text" id="v_ta" class="form-control input-vital" placeholder="120/80"></div>
+              <div class="col-md-2"><span class="label-vital">Temp</span><input type="number" id="v_temp" class="form-control input-vital" placeholder="36.5"></div>
+              <div class="col-md-2"><span class="label-vital">F.C.</span><input type="number" id="v_fc" class="form-control input-vital" placeholder="80"></div>
+              <div class="col-md-2"><span class="label-vital">SpO2</span><input type="number" id="v_spo2" class="form-control input-vital" placeholder="98"></div>
+              <div class="col-md-2"><span class="label-vital">Glucosa</span><input type="number" id="v_glu" class="form-control input-vital"></div>
+              <div class="col-md-2"><span class="label-vital">Peso</span><input type="number" id="v_peso" class="form-control input-vital"></div>
             </div>
+
+            <div class="mb-3"><label class="fw-bold">Motivo</label><input type="text" id="motivo" class="form-control" required></div>
+
+            <!-- 3. SIGNOS DE ALARMA -->
+            <h6 class="text-danger border-bottom pb-2 mt-4 mb-2">3. Signos de Alarma</h6>
+            <div class="row mb-3">
+              <div class="col-md-4"><input type="checkbox" class="btn-check alarma-check" id="s1" value="Dificultad Respiratoria"><label class="btn btn-outline-secondary w-100" for="s1">Dificultad Respiratoria</label></div>
+              <div class="col-md-4"><input type="checkbox" class="btn-check alarma-check" id="s2" value="Dolor Torácico"><label class="btn btn-outline-secondary w-100" for="s2">Dolor Torácico</label></div>
+              <div class="col-md-4"><input type="checkbox" class="btn-check alarma-check" id="s3" value="Sangrado Activo"><label class="btn btn-outline-secondary w-100" for="s3">Sangrado Activo</label></div>
+            </div>
+
+            <div class="mb-3"><label>Antecedentes</label><textarea id="antecedentes" class="form-control" rows="2"></textarea></div>
+
+            <!-- BOTONES DE NIVEL -->
+            <hr class="my-4">
+            <div class="d-grid gap-2">
+              <button type="button" class="btn btn-nivel-1 priority-btn" onclick="registrarPaciente(1)">🔴 NIVEL 1 - RESUCITACIÓN</button>
+              <button type="button" class="btn btn-nivel-2 priority-btn" onclick="registrarPaciente(2)">🟠 NIVEL 2 - EMERGENCIA</button>
+              <button type="button" class="btn btn-nivel-3 priority-btn" onclick="registrarPaciente(3)">🟡 NIVEL 3 - URGENCIA</button>
+              <button type="button" class="btn btn-nivel-4 priority-btn" onclick="registrarPaciente(4)">🟢 NIVEL 4 - MENOR</button>
+              <button type="button" class="btn btn-nivel-5 priority-btn" onclick="registrarPaciente(5)">🔵 NIVEL 5 - NO URGENTE</button>
+            </div>
+          </form>
         </div>
+      </div>
     </div>
+
+    <!-- ▸ INFORMES FAMILIARES -->
+    <div class="tab-pane fade" id="pills-informes">
+      <div class="card shadow">
+        <div class="card-header bg-success text-white">
+          <h4 class="mb-0"><i class="bi bi-search"></i> Búsqueda de Pacientes</h4>
+        </div>
+        <div class="card-body p-5 text-center">
+          <h5 class="mb-3">Ingrese el nombre del paciente para ver su estatus actual</h5>
+          <div class="input-group input-group-lg mb-4">
+            <input type="text" id="busquedaInforme" class="form-control" placeholder="Ej. Juan Pérez">
+            <button class="btn btn-success" type="button" onclick="buscarInforme()">Buscar</button>
+          </div>
+
+          <!-- Resultado de búsqueda -->
+          <div id="resultadoBusqueda" class="text-start mt-4"></div>
+
+          <!-- Listado de pacientes -->
+          <div class="row mt-4">
+            <div class="col-md-12">
+              <h5>Listado de Pacientes Ingresados</h5>
+              <ul id="listaPacientes" class="list-group">
+                <!-- Se genera automáticamente -->
+              </ul>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+  </div>
 </div>
 
-<div id="formato-impresion">
-    <div style="border-bottom: 2px solid black; text-align: center;"><h2>🏥 HOJA DE ADMISIÓN</h2></div>
-    <p><strong>Paciente:</strong> <span id="print-nombre"></span> | <strong>Edad:</strong> <span id="print-edad"></span></p>
-    <p><strong>Signos:</strong> T/A: <span id="print-ta"></span> | Temp: <span id="print-temp"></span> | SpO2: <span id="print-spo2"></span></p>
-    <p><strong>Motivo:</strong> <span id="print-motivo"></span></p>
-    <h3 style="text-align: center; border: 2px solid black; padding: 10px;">NIVEL <span id="print-nivel"></span></h3>
+<!-- ▸ HOJA DE ADMISION -->
+<div id="formato-impresion" class="d-none d-print-block">
+  <h2 class="text-center mb-4">🏥 HOJA DE ADMISIÓN</h2>
+  
+  <div class="card p-3 shadow-sm mb-3">
+    <h5 class="fw-bold mb-2">Información del Paciente</h5>
+    <div class="row">
+      <div class="col-md-6"><p><strong>Nombre:</strong> <span id="print-nombre"></span></p></div>
+      <div class="col-md-3"><p><strong>Edad:</strong> <span id="print-edad"></span></p></div>
+      <div class="col-md-3"><p><strong>Especialidad:</strong> <span id="print-especialidad"></span></p></div>
+    </div>
+  </div>
+
+  <div class="card p-3 shadow-sm mb-3 card-signos">
+    <h5 class="fw-bold mb-2">Signos Vitales</h5>
+    <div class="row">
+      <div class="col-md-3"><p><strong>T/A:</strong> <span id="print-ta"></span></p></div>
+      <div class="col-md-3"><p><strong>Temp:</strong> <span id="print-temp"></span></p></div>
+      <div class="col-md-3"><p><strong>SpO2:</strong> <span id="print-spo2"></span></p></div>
+      <div class="col-md-3"><p><strong>Peso:</strong> <span id="print-peso"></span></p></div>
+    </div>
+  </div>
+
+  <div class="card p-3 shadow-sm mb-3">
+    <h5 class="fw-bold mb-2">Motivo de Ingreso</h5>
+    <p id="print-motivo"></p>
+  </div>
+
+  <div class="nivel-prioridad mb-3 text-center" id="print-nivel-div">
+    NIVEL <span id="print-nivel"></span>
+  </div>
 </div>
 
 <script type="module">
-    import { db } from './firebase-config.js';
-    import { collection, addDoc, serverTimestamp, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { db } from './firebase-config.js';
+import { collection, addDoc, serverTimestamp, query, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-    // --- FUNCION 1: REGISTRAR (INGRESO) ---
-    window.registrarPaciente = async (nivel) => {
-        const nombre = document.getElementById('nombre').value;
-        const edad = document.getElementById('edad').value;
-        const especialidad = document.getElementById('especialidad').value;
-        const motivo = document.getElementById('motivo').value;
-        
-        const vitales = {
-            ta: document.getElementById('v_ta').value || '--',
-            temp: document.getElementById('v_temp').value || '--',
-            spo2: document.getElementById('v_spo2').value || '--'
-        };
+// --- FUNCION REGISTRAR ---
+window.registrarPaciente = async (nivel) => {
+    const nombre = document.getElementById('nombre').value;
+    const edad = document.getElementById('edad').value;
+    const especialidad = document.getElementById('especialidad').value;
+    const motivo = document.getElementById('motivo').value;
+    const vitales = {
+        ta: document.getElementById('v_ta').value || '--',
+        temp: document.getElementById('v_temp').value || '--',
+        spo2: document.getElementById('v_spo2').value || '--',
+        peso: document.getElementById('v_peso').value || '--'
+    };
+    let signosAlarma = [];
+    document.querySelectorAll('.alarma-check:checked').forEach(c => signosAlarma.push(c.value));
+    if(!nombre || !motivo) { alert("Nombre y Motivo obligatorios"); return; }
 
-        let signosAlarma = [];
-        document.querySelectorAll('.alarma-check:checked').forEach(c => signosAlarma.push(c.value));
+    try {
+        await addDoc(collection(db, "pacientes"), {
+            nombre, edad, especialidad, motivo, vitales, signosAlarma,
+            nivel_prioridad: nivel, estado: "espera",
+            ubicacion_actual: "Sala de Espera",
+            fecha_ingreso: serverTimestamp()
+        });
 
-        if(!nombre || !motivo) { alert("Nombre y Motivo obligatorios"); return; }
+        // Llenar impresión
+        document.getElementById('print-nombre').innerText = nombre;
+        document.getElementById('print-edad').innerText = edad;
+        document.getElementById('print-especialidad').innerText = especialidad;
+        document.getElementById('print-ta').innerText = vitales.ta;
+        document.getElementById('print-temp').innerText = vitales.temp;
+        document.getElementById('print-spo2').innerText = vitales.spo2;
+        document.getElementById('print-peso').innerText = vitales.peso;
+        document.getElementById('print-motivo').innerText = motivo;
+        document.getElementById('print-nivel').innerText = nivel;
 
-        try {
-            await addDoc(collection(db, "pacientes"), {
-                nombre, edad, especialidad, motivo, vitales, signosAlarma,
-                nivel_prioridad: nivel, estado: "espera", // Estado inicial
-                ubicacion_actual: "Sala de Espera", // Ubicación inicial
-                fecha_ingreso: serverTimestamp()
-            });
-            
-            // Llenar impresión rápida
-            document.getElementById('print-nombre').innerText = nombre;
-            document.getElementById('print-edad').innerText = edad;
-            document.getElementById('print-ta').innerText = vitales.ta;
-            document.getElementById('print-temp').innerText = vitales.temp;
-            document.getElementById('print-spo2').innerText = vitales.spo2;
-            document.getElementById('print-motivo').innerText = motivo;
-            document.getElementById('print-nivel').innerText = nivel;
-            
-            window.print();
-            alert("✅ Ingreso Exitoso");
-            document.getElementById('triageForm').reset();
-            document.querySelectorAll('.alarma-check').forEach(c => c.checked = false);
-        } catch (e) { console.error(e); alert("Error"); }
-    }
+        window.print();
+        alert("✅ Ingreso Exitoso");
+        document.getElementById('triageForm').reset();
+        document.querySelectorAll('.alarma-check').forEach(c => c.checked = false);
+        cargarListadoPacientes();
+    } catch(e){ console.error(e); alert("Error"); }
+}
 
-    // --- FUNCION 2: BUSCAR (INFORMES) ---
-    window.buscarInforme = async () => {
-        const texto = document.getElementById('busquedaInforme').value.toLowerCase();
-        const div = document.getElementById('resultadoBusqueda');
-        div.innerHTML = '<div class="spinner-border text-primary"></div> Buscando...';
+// --- FUNCION BUSCAR ---
+window.buscarInforme = async () => {
+    const texto = document.getElementById('busquedaInforme').value.toLowerCase();
+    const div = document.getElementById('resultadoBusqueda');
+    div.innerHTML = '<div class="spinner-border text-primary"></div> Buscando...';
 
-        if(!texto) { div.innerHTML = ""; return; }
+    if(!texto) { div.innerHTML = ""; return; }
 
-        // Buscamos en toda la colección (esto es simplificado para el demo)
-        // En producción real se usan índices de texto completo.
-        const q = query(collection(db, "pacientes")); // Traemos todo y filtramos en JS (solo para el demo por facilidad)
-        
-        try {
-            const querySnapshot = await getDocs(q);
-            let encontrados = [];
-            
-            querySnapshot.forEach((doc) => {
-                const data = doc.data();
-                if (data.nombre.toLowerCase().includes(texto)) {
-                    encontrados.push(data);
-                }
-            });
+    const q = query(collection(db, "pacientes"));
+    try {
+        const querySnapshot = await getDocs(q);
+        const encontrados = [];
+        querySnapshot.forEach(doc => { const data = doc.data(); if(data.nombre.toLowerCase().includes(texto)) encontrados.push(data); });
 
-            div.innerHTML = "";
-            if (encontrados.length === 0) {
-                div.innerHTML = '<div class="alert alert-warning">No se encontró al paciente.</div>';
-                return;
-            }
+        div.innerHTML = "";
+        if(encontrados.length === 0) {
+            div.innerHTML = '<div class="alert alert-warning">No se encontró al paciente.</div>';
+            return;
+        }
 
-            encontrados.forEach(p => {
-                // Definir color según ubicación
-                let claseEstado = `estado-${p.ubicacion_actual}`;
-                let icono = "🏥";
-                if(p.estado === 'espera') { icono = "⏳"; p.ubicacion_actual = "Sala de Espera (Por atender)"; claseEstado=""; }
-                if(p.ubicacion_actual === 'ALTA') icono = "✅";
-                if(p.ubicacion_actual === 'CIRUGIA') icono = "🔪";
-                
-                let html = `
-                    <div class="card mb-3 shadow-sm resultado-informe ${claseEstado}">
-                        <div class="card-body">
-                            <h3 class="card-title">${p.nombre} (${p.edad} años)</h3>
-                            <hr>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <p class="mb-1 text-muted">Estatus Actual:</p>
-                                    <h4 class="fw-bold text-primary">${icono} ${p.ubicacion_actual}</h4>
-                                </div>
-                                <div class="col-md-6">
-                                    <p class="mb-1 text-muted">Detalles / Habitación:</p>
-                                    <h5 class="fw-bold">${p.detalle_ubicacion || "En espera de asignación"}</h5>
-                                </div>
-                            </div>
-                            <div class="mt-3 bg-light p-2 rounded small">
-                                <strong>Ingresó por:</strong> ${p.especialidad} <br>
-                                <strong>Fecha ingreso:</strong> ${p.fecha_ingreso ? new Date(p.fecha_ingreso.seconds * 1000).toLocaleString() : '--'}
-                            </div>
-                        </div>
-                    </div>
-                `;
-                div.innerHTML += html;
-            });
+        encontrados.forEach(p => mostrarHistorialPaciente(p));
 
-        } catch (error) { console.error(error); div.innerHTML = "Error al buscar"; }
-    }
+    } catch (error){ console.error(error); div.innerHTML = "Error al buscar"; }
+}
+
+// --- FUNCION MOSTRAR HISTORIAL ---
+function mostrarHistorialPaciente(p) {
+    const div = document.getElementById('resultadoBusqueda');
+    let claseEstado = `estado-${p.ubicacion_actual}`;
+    let icono = "🏥";
+    if(p.estado === 'espera') { icono="⏳"; p.ubicacion_actual="Sala de Espera (Por atender)"; claseEstado=""; }
+    if(p.ubicacion_actual==='ALTA') icono="✅";
+    if(p.ubicacion_actual==='CIRUGIA') icono="🔪";
+
+    div.innerHTML = `
+    <div class="card mb-3 shadow-sm resultado-informe ${claseEstado}">
+      <div class="card-body">
+        <h3 class="card-title">${p.nombre} (${p.edad} años)</h3>
+        <hr>
+        <div class="row">
+          <div class="col-md-6"><p class="mb-1 text-muted">Estatus Actual:</p><h4 class="fw-bold text-primary">${icono} ${p.ubicacion_actual}</h4></div>
+          <div class="col-md-6"><p class="mb-1 text-muted">Detalles / Habitación:</p><h5 class="fw-bold">${p.detalle_ubicacion||'En espera de asignación'}</h5></div>
+        </div>
+        <div class="mt-3 bg-light p-2 rounded small">
+          <strong>Especialidad:</strong> ${p.especialidad} <br>
+          <strong>Motivo ingreso:</strong> ${p.motivo} <br>
+          <strong>Signos vitales:</strong> T/A: ${p.vitales.ta} | Temp: ${p.vitales.temp} | SpO2: ${p.vitales.spo2} | Peso: ${p.vitales.peso} <br>
+          <strong>Fecha ingreso:</strong> ${p.fecha_ingreso ? new Date(p.fecha_ingreso.seconds*1000).toLocaleString() : '--'}
+        </div>
+      </div>
+    </div>
+    `;
+}
+
+// --- FUNCION LISTAR PACIENTES ---
+async function cargarListadoPacientes() {
+    const lista = document.getElementById('listaPacientes');
+    lista.innerHTML = '<li class="list-group-item">Cargando...</li>';
+    try {
+        const q = query(collection(db,"pacientes"));
+        const querySnapshot = await getDocs(q);
+        lista.innerHTML = '';
+        querySnapshot.forEach(doc => {
+            const p = doc.data();
+            const li = document.createElement('li');
+            li.className = 'list-group-item list-group-item-action';
+            li.style.cursor = 'pointer';
+            li.textContent = p.nombre + ' (' + p.edad + ' años)';
+            li.addEventListener('click',()=>mostrarHistorialPaciente(p));
+            lista.appendChild(li);
+        });
+        if(lista.childNodes.length===0) lista.innerHTML='<li class="list-group-item text-muted">No hay pacientes ingresados</li>';
+    } catch(e){ console.error(e); lista.innerHTML='<li class="list-group-item text-danger">Error al cargar pacientes</li>'; }
+}
+cargarListadoPacientes();
 </script>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
+// ▸ MODO OSCURO
 const body = document.body;
 const btn = document.getElementById("darkModeBtn");
 
-// Función para aplicar el modo
-function aplicarModo(modo) {
-    if (modo === "dark") {
-        body.classList.add("dark-mode");
-        body.classList.remove("light-mode");
-        btn.textContent = "🌙";
-    } else {
-        body.classList.add("light-mode");
-        body.classList.remove("dark-mode");
-        btn.textContent = "☀️";
-    }
+function aplicarModo(modo){
+    if(modo==="dark"){body.classList.add("dark-mode"); body.classList.remove("light-mode"); btn.textContent="🌙";}
+    else{body.classList.add("light-mode"); body.classList.remove("dark-mode"); btn.textContent="☀️";}
 }
 
-// Leer preferencia guardada
 const modoGuardado = localStorage.getItem("modo") || "light";
 aplicarModo(modoGuardado);
 
-// Cambiar modo al hacer click
-btn.addEventListener("click", () => {
-    const nuevoModo = body.classList.contains("dark-mode") ? "light" : "dark";
-    localStorage.setItem("modo", nuevoModo);
+btn.addEventListener("click",()=>{
+    const nuevoModo = body.classList.contains("dark-mode")?"light":"dark";
+    localStorage.setItem("modo",nuevoModo);
     aplicarModo(nuevoModo);
 });
-
-// Opcional: sincronizar en otras pestañas abiertas
-window.addEventListener("storage", (e) => {
-    if (e.key === "modo") aplicarModo(e.newValue);
-});
-
-
+window.addEventListener("storage",(e)=>{ if(e.key==="modo") aplicarModo(e.newValue); });
 </script>
 
 </body>

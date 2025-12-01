@@ -165,3 +165,43 @@ body.dark-mode .input-group-text {
     }
     .no-print { display: none !important; }
 }
+/* Hoja de Admisión - impresión y vista previa */
+#formato-impresion {
+    max-width: 700px;
+    margin: 20px auto;
+    padding: 20px;
+    border-radius: 10px;
+    border: 2px solid #0d6efd;
+    background-color: white;
+    color: #212529;
+    font-family: Arial, sans-serif;
+}
+
+#formato-impresion h2 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+#formato-impresion .card-signos {
+    margin-top: 15px;
+}
+
+#formato-impresion .nivel-prioridad {
+    text-align: center;
+    font-size: 1.2rem;
+    font-weight: bold;
+    padding: 10px;
+    border-radius: 5px;
+    color: white;
+}
+
+.nivel-1 { background-color: #dc3545; }
+.nivel-2 { background-color: #fd7e14; }
+.nivel-3 { background-color: #ffc107; color: black; }
+.nivel-4 { background-color: #198754; }
+.nivel-5 { background-color: #0d6efd; }
+
+#formato-impresion .row p {
+    margin-bottom: 5px;
+}
+
