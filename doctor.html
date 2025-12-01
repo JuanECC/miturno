@@ -9,245 +9,704 @@
     <link rel="stylesheet" href="./rsc/css_doctor.css">
 </head>
 
-<body class="bg-light">
+<body>
+
+<!-- ███ MENÚ DE NAVEGACIÓN ███ -->
+<nav class="navbar navbar-expand-lg navbar-light bg-light mb-4">
+  <div class="container-fluid">
+    <a class="navbar-brand fw-bold" href="doctor.html">
+      <i class="bi bi-heart-pulse me-2"></i> Módulo Doctor
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menu" aria-expanded="false">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="menu">
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item">
+          <a class="nav-link" href="recepcion.html">
+            <i class="bi bi-hospital me-1"></i> Recepción
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="pantalla.html">
+            <i class="bi bi-display me-1"></i> Pantalla de turnos
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link active" href="doctor.html">
+            <i class="bi bi-stethoscope me-1"></i> Doctor
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="admin.html">
+            <i class="bi bi-gear me-1"></i> Administración
+          </a>
+        </li>
+        <li class="nav-item">
+          <button id="darkModeBtn" class="btn btn-outline-dark ms-3">
+            <i class="bi bi-moon-stars-fill"></i>
+          </button>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+<!-- ███ FIN DEL MENÚ ███ -->
+
+<div class="container mt-4 mb-5">
     
-
-<nav class="navbar navbar-expand-lg navbar-dark bg-primary sticky-top mb-4 shadow">
-    <div class="container">
-
-        <a href="#" class="navbar-brand h1 mb-0">
-            <i class="bi bi-activity"></i> Monitor Médico
-        </a>
-
-        <!-- Botón responsive -->
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menuNavegacion">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-
-        <div class="collapse navbar-collapse" id="menuNavegacion">
-
-            <!-- Menú principal -->
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-
-                 <li class="nav-item">
-                    <a class="nav-link" href="recepcion.html">
-                        <i class="bi bi-people"></i> Recepción
-                    </a>
-                </li>
-
-                <li class="nav-item">
-                    <a class="nav-link" href="pantalla.html">
-                        <i class="bi bi-tv"></i> Pantalla de turnos
-                    </a>
-                </li>
-
-
-                <li class="nav-item">
-                    <a class="nav-link active" href="doctor.html">
-                        <i class="bi bi-stethoscope"></i> Doctor
-                    </a>
-                </li>
-
-                <li class="nav-item">
-                    <a class="nav-link" href="admin.html">
-                        <i class="bi bi-gear"></i> Admin
-                    </a>
-                </li>
-
-            </ul>
-
-            <!-- Controles del lado derecho -->
-            <div class="d-flex align-items-center gap-3">
-                <div class="input-group input-group-sm">
-                    <span class="input-group-text"><i class="bi bi-search"></i></span>
-                    <input type="text" id="buscador" class="form-control" placeholder="Buscar...">
+    <!-- CABECERA SIMPLE -->
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <h1 class="fw-bold text-primary">
+                <i class="bi bi-heart-pulse me-2"></i> CONSULTORIO MÉDICO
+            </h1>
+            <p class="text-muted">Atender pacientes en espera</p>
+        </div>
+        <div class="col-md-4">
+            <div class="card border-primary">
+                <div class="card-body p-3">
+                    <div class="input-group input-group-sm mb-2">
+                        <span class="input-group-text">
+                            <i class="bi bi-search"></i>
+                        </span>
+                        <input type="text" id="buscador" class="form-control" placeholder="Buscar paciente...">
+                    </div>
+                    <select id="filtroEspecialidad" class="form-select form-select-sm">
+                        <option value="TODOS">Todas las especialidades</option>
+                        <option value="Medicina General">Medicina General</option>
+                        <option value="Traumatología">Traumatología</option>
+                        <option value="Cardiología">Cardiología</option>
+                        <option value="Pediatría">Pediatría</option>
+                        <option value="Ginecología">Ginecología</option>
+                    </select>
                 </div>
-
-                <select id="filtroEspecialidad" class="form-select form-select-sm" style="width: 180px;">
-                    <option value="TODOS">-- Todas --</option>
-                    <option value="Medicina General">Medicina General</option>
-                    <option value="Traumatología">Traumatología</option>
-                    <option value="Cardiología">Cardiología</option>
-                    <option value="Pediatría">Pediatría</option>
-                </select>
-
-                <button class="btn btn-outline-light btn-sm" onclick="alternarTema()">
-                    <i class="bi bi-moon-stars-fill"></i>
-                </button>
             </div>
-
         </div>
     </div>
-</nav>
-
-
-<div class="container">
-    <div id="lista-doctor">
-        <div class="text-center mt-5"><div class="spinner-border text-primary"></div></div>
+    
+    <!-- ESTADÍSTICAS SIMPLES -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-body p-3">
+                    <div class="row text-center">
+                        <div class="col-md-3 col-6 mb-2">
+                            <div class="p-2">
+                                <div class="fs-3 fw-bold text-primary" id="totalPacientes">0</div>
+                                <small class="text-muted">Total Pacientes</small>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-6 mb-2">
+                            <div class="p-2">
+                                <div class="fs-3 fw-bold text-warning" id="pacientesPrioridad">0</div>
+                                <small class="text-muted">Prioridad Alta</small>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-6">
+                            <div class="p-2">
+                                <div class="fs-3 fw-bold text-success" id="atendidosHoy">0</div>
+                                <small class="text-muted">Atendidos Hoy</small>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-6">
+                            <div class="p-2">
+                                <div class="fs-3 fw-bold text-info" id="tiempoPromedio">0 min</div>
+                                <small class="text-muted">Espera Promedio</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- LISTA DE PACIENTES -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white py-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h4 class="mb-0">
+                            <i class="bi bi-people-fill me-2"></i> PACIENTES EN ESPERA
+                        </h4>
+                        <div>
+                            <span class="badge bg-light text-primary me-2" id="contadorPacientes">0</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body p-4">
+                    <div id="lista-doctor">
+                        <div class="text-center py-4">
+                            <div class="spinner-border text-primary mb-3"></div>
+                            <p class="text-muted">Cargando pacientes...</p>
+                        </div>
+                    </div>
+                    
+                    <div id="sin-pacientes" class="text-center py-5 d-none">
+                        <div class="alert alert-info">
+                            <i class="bi bi-check-circle-fill fs-1 d-block mb-3"></i>
+                            <h4>No hay pacientes en espera</h4>
+                            <p class="mb-0">Todos los pacientes han sido atendidos.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
+<!-- MODAL DE ATENCIÓN MEJORADO -->
 <div class="modal fade" id="modalDecision" tabindex="-1">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header bg-primary text-white">
-                <h5 class="modal-title">🏥 Definir Destino del Paciente</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                <h5 class="modal-title">
+                    <i class="bi bi-clipboard-check-fill me-2"></i> 
+                    Finalizar Atención
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
                 <input type="hidden" id="pacienteIdActual">
-                <p>Estás atendiendo a: <strong id="nombrePacienteModal" class="fs-5"></strong></p>
                 
-                <div class="mb-3">
-                    <label class="form-label fw-bold">¿Cuál es el siguiente paso?</label>
-                    <select id="destinoPaciente" class="form-select form-select-lg">
-                        <option value="ALTA">✅ Dar de Alta (A casa)</option>
-                        <option value="OBSERVACION">👀 Pase a Observación (Camilla)</option>
-                        <option value="CIRUGIA">🔪 Pase a Cirugía / Quirófano</option>
-                        <option value="HOSPITALIZACION">🛏️ Ingreso a Piso (Habitación)</option>
-                        <option value="TRASLADO">🚑 Traslado a otro Hospital</option>
-                    </select>
+                <div class="alert alert-info">
+                    <div class="d-flex align-items-center">
+                        <i class="bi bi-person-circle fs-3 me-3"></i>
+                        <div>
+                            <h6 class="fw-bold mb-1">Paciente a atender:</h6>
+                            <h4 class="fw-bold mb-0" id="nombrePacienteModal">Cargando...</h4>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <h6 class="card-title fw-bold">
+                                    <i class="bi bi-info-circle me-2"></i> Información del Paciente
+                                </h6>
+                                <div class="row">
+                                    <div class="col-6">
+                                        <small class="text-muted">Edad:</small>
+                                        <p class="fw-bold" id="pacienteEdad">--</p>
+                                    </div>
+                                    <div class="col-6">
+                                        <small class="text-muted">Especialidad:</small>
+                                        <p class="fw-bold" id="pacienteEspecialidad">--</p>
+                                    </div>
+                                    <div class="col-12">
+                                        <small class="text-muted">Motivo:</small>
+                                        <p class="fw-bold" id="pacienteMotivo">--</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <h6 class="card-title fw-bold">
+                                    <i class="bi bi-activity me-2"></i> Signos Vitales
+                                </h6>
+                                <div class="row text-center">
+                                    <div class="col-4">
+                                        <small class="text-muted">T/A</small>
+                                        <p class="fw-bold fs-5" id="pacienteTA">--</p>
+                                    </div>
+                                    <div class="col-4">
+                                        <small class="text-muted">Temp</small>
+                                        <p class="fw-bold fs-5" id="pacienteTemp">--</p>
+                                    </div>
+                                    <div class="col-4">
+                                        <small class="text-muted">SpO2</small>
+                                        <p class="fw-bold fs-5" id="pacienteSpO2">--</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mb-4">
+                    <label class="form-label fw-bold">
+                        <i class="bi bi-signpost-2-fill me-2"></i> 
+                        Definir Destino del Paciente
+                    </label>
+                    
+                    <div class="row g-3" id="opcionesDestino">
+                        <div class="col-md-4">
+                            <div class="modal-option text-center" data-destino="ALTA">
+                                <i class="bi bi-check-circle-fill text-success fs-1 d-block mb-2"></i>
+                                <h6>Alta Médica</h6>
+                                <small class="text-muted">Dar de alta al paciente</small>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="modal-option text-center" data-destino="OBSERVACION">
+                                <i class="bi bi-eye-fill text-warning fs-1 d-block mb-2"></i>
+                                <h6>Observación</h6>
+                                <small class="text-muted">Pase a camilla</small>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="modal-option text-center" data-destino="CIRUGIA">
+                                <i class="bi bi-scissors text-danger fs-1 d-block mb-2"></i>
+                                <h6>Cirugía</h6>
+                                <small class="text-muted">Pase a quirófano</small>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="modal-option text-center" data-destino="HOSPITALIZACION">
+                                <i class="bi bi-hospital-fill text-info fs-1 d-block mb-2"></i>
+                                <h6>Hospitalización</h6>
+                                <small class="text-muted">Ingreso a habitación</small>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="modal-option text-center" data-destino="TRASLADO">
+                                <i class="bi bi-ambulance text-secondary fs-1 d-block mb-2"></i>
+                                <h6>Traslado</h6>
+                                <small class="text-muted">A otro hospital</small>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <input type="hidden" id="destinoPaciente" value="">
                 </div>
                 
                 <div class="mb-3">
-                    <label class="form-label">Detalles de ubicación / Instrucciones:</label>
-                    <input type="text" id="ubicacionDetalle" class="form-control" placeholder="Ej. Cama 4, Quirófano 2, Habitación 305...">
+                    <label class="form-label fw-bold">
+                        <i class="bi bi-journal-text me-2"></i> 
+                        Instrucciones / Detalles
+                    </label>
+                    <textarea id="ubicacionDetalle" class="form-control" rows="3" 
+                              placeholder="Escriba observaciones, medicación prescrita, instrucciones específicas..."></textarea>
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                <button type="button" class="btn btn-primary" onclick="confirmarMovimiento()">Guardar y Finalizar</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="bi bi-x-circle me-1"></i> Cancelar
+                </button>
+                <button type="button" class="btn btn-primary" id="btnConfirmar" disabled onclick="confirmarMovimiento()">
+                    <i class="bi bi-check-circle me-1"></i> Confirmar y Finalizar
+                </button>
             </div>
         </div>
     </div>
 </div>
 
+<!-- ============================
+     FIREBASE
+============================ -->
 <script type="module">
     import { db } from './firebase-config.js';
     import { collection, query, where, onSnapshot, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-    // Inicializar Modal de Bootstrap
+    // Inicializar Modal
     const decisionModal = new bootstrap.Modal(document.getElementById('modalDecision'));
     
+    // Variables globales
     const listaDiv = document.getElementById('lista-doctor');
+    const sinPacientesDiv = document.getElementById('sin-pacientes');
     const filtroSelect = document.getElementById('filtroEspecialidad');
     const buscadorInput = document.getElementById('buscador');
-    const TIEMPOS_MAX = { 1: 0, 2: 10, 3: 60, 4: 120, 5: 240 };
+    const contadorPacientes = document.getElementById('contadorPacientes');
+    
+    // Tiempos máximos de espera por prioridad
+    const TIEMPOS_MAX = { 1: 0, 2: 10, 3: 30, 4: 60, 5: 120 };
     let todosLosPacientes = [];
+    let pacienteSeleccionado = null;
 
     // Cargar filtros guardados
-    if (localStorage.getItem('filtro_medico')) filtroSelect.value = localStorage.getItem('filtro_medico');
-    if (localStorage.getItem('tema') === 'dark') alternarTema();
+    if (localStorage.getItem('filtro_medico')) {
+        filtroSelect.value = localStorage.getItem('filtro_medico');
+    }
 
-    const q = query(
-    collection(db, "pacientes"),
-    where("estado", "not-in", ["historial", "seguimiento", "atendido", "alta", "finalizado"])
-);
+    // Consulta a Firebase
+    const q = query(collection(db, "pacientes"), where("estado", "==", "espera"));
 
-
+    // Escuchar cambios en tiempo real
     onSnapshot(q, (snapshot) => {
         todosLosPacientes = [];
         const ahora = new Date();
+        
         snapshot.forEach(doc => {
             const data = doc.data();
+            
+            // Calcular tiempo de espera
             let minutosEspera = 0;
-            if (data.fecha_ingreso) minutosEspera = Math.floor((ahora - data.fecha_ingreso.toDate()) / 60000);
-            todosLosPacientes.push({ id: doc.id, ...data, minutosEspera });
+            if (data.fecha_ingreso && data.fecha_ingreso.toDate) {
+                const fechaIngreso = data.fecha_ingreso.toDate();
+                minutosEspera = Math.floor((ahora - fechaIngreso) / 60000);
+            }
+            
+            todosLosPacientes.push({ 
+                id: doc.id, 
+                ...data, 
+                minutosEspera 
+            });
         });
+        
+        // Actualizar estadísticas
+        actualizarEstadisticas();
+        
+        // Renderizar pacientes
         renderizarPacientes();
+    }, (error) => {
+        console.error("Error en Firebase:", error);
+        listaDiv.innerHTML = `
+            <div class="alert alert-danger text-center">
+                <i class="bi bi-exclamation-triangle-fill fs-1 d-block mb-3"></i>
+                <h4>Error de conexión</h4>
+                <p>No se pudo conectar con la base de datos.</p>
+            </div>
+        `;
     });
 
+    // Event listeners
     filtroSelect.addEventListener('change', () => {
         localStorage.setItem('filtro_medico', filtroSelect.value);
         renderizarPacientes();
     });
+    
     buscadorInput.addEventListener('input', renderizarPacientes);
 
+    // Actualizar estadísticas
+    function actualizarEstadisticas() {
+        // Total pacientes
+        document.getElementById('totalPacientes').textContent = todosLosPacientes.length;
+        document.getElementById('contadorPacientes').textContent = todosLosPacientes.length;
+        
+        // Pacientes con prioridad alta (nivel 1-2)
+        const prioridadAlta = todosLosPacientes.filter(p => p.nivel_prioridad <= 2).length;
+        document.getElementById('pacientesPrioridad').textContent = prioridadAlta;
+        
+        // Tiempo promedio de espera
+        if (todosLosPacientes.length > 0) {
+            const tiempoTotal = todosLosPacientes.reduce((sum, p) => sum + p.minutosEspera, 0);
+            const promedio = Math.round(tiempoTotal / todosLosPacientes.length);
+            document.getElementById('tiempoPromedio').textContent = `${promedio} min`;
+        }
+    }
+
+    // Renderizar lista de pacientes
     function renderizarPacientes() {
         const especialidad = filtroSelect.value;
         const busqueda = buscadorInput.value.toLowerCase();
         
-        let filtrados = todosLosPacientes;
-        if (especialidad !== "TODOS") filtrados = filtrados.filter(p => p.especialidad === especialidad);
-        if (busqueda) filtrados = filtrados.filter(p => p.nombre.toLowerCase().includes(busqueda));
-
-        filtrados.sort((a, b) => (a.nivel_prioridad - b.nivel_prioridad) || (a.fecha_ingreso - b.fecha_ingreso));
+        // Filtrar pacientes
+        let filtrados = [...todosLosPacientes];
+        
+        if (especialidad !== "TODOS") {
+            filtrados = filtrados.filter(p => p.especialidad === especialidad);
+        }
+        
+        if (busqueda) {
+            filtrados = filtrados.filter(p => 
+                p.nombre.toLowerCase().includes(busqueda) ||
+                (p.motivo && p.motivo.toLowerCase().includes(busqueda))
+            );
+        }
+        
+        // Ordenar por prioridad y luego por tiempo
+        filtrados.sort((a, b) => {
+            if (a.nivel_prioridad !== b.nivel_prioridad) {
+                return a.nivel_prioridad - b.nivel_prioridad;
+            }
+            return a.minutosEspera - b.minutosEspera;
+        });
+        
+        // Mostrar/ocultar mensaje
+        if (filtrados.length === 0) {
+            listaDiv.innerHTML = '';
+            sinPacientesDiv.classList.remove('d-none');
+            return;
+        }
+        
+        sinPacientesDiv.classList.add('d-none');
         dibujarHTML(filtrados);
     }
 
+    // Dibujar HTML de pacientes
     function dibujarHTML(pacientes) {
-        listaDiv.innerHTML = "";
-        if(pacientes.length === 0) {
-            listaDiv.innerHTML = '<div class="alert alert-secondary text-center">Sin pacientes pendientes.</div>';
+        let html = '';
+        
+        pacientes.forEach((p, index) => {
+            const tiempoLimite = TIEMPOS_MAX[p.nivel_prioridad] || 120;
+            const estaRetrasado = p.minutosEspera > tiempoLimite;
+            const v = p.vitales || { ta: '--', temp: '--', spo2: '--', fc: '--', peso: '--' };
+            
+            // Determinar color de borde según prioridad
+            let bordeClase = '';
+            switch(p.nivel_prioridad) {
+                case 1: bordeClase = 'border-danger'; break;
+                case 2: bordeClase = 'border-warning'; break;
+                case 3: bordeClase = 'border-info'; break;
+                case 4: bordeClase = 'border-success'; break;
+                case 5: bordeClase = 'border-primary'; break;
+                default: bordeClase = 'border-secondary';
+            }
+            
+            // Determinar clase de badge
+            let badgeClase = '';
+            switch(p.nivel_prioridad) {
+                case 1: badgeClase = 'bg-danger text-white'; break;
+                case 2: badgeClase = 'bg-warning text-dark'; break;
+                case 3: badgeClase = 'bg-info text-white'; break;
+                case 4: badgeClase = 'bg-success text-white'; break;
+                case 5: badgeClase = 'bg-primary text-white'; break;
+                default: badgeClase = 'bg-secondary text-white';
+            }
+            
+            // Alertas de signos
+            let alertasHtml = '';
+            if (p.signosAlarma && p.signosAlarma.length > 0) {
+                alertasHtml = `
+                    <div class="alert alert-danger py-1 px-2 mb-2">
+                        <i class="bi bi-exclamation-triangle-fill me-1"></i>
+                        <small><strong>Signos de alarma:</strong> ${p.signosAlarma.join(", ")}</small>
+                    </div>
+                `;
+            }
+            
+            // Botón de atención (solo el primero)
+            let botonHtml = '';
+            if (index === 0) {
+                botonHtml = `
+                    <button onclick="abrirModalDecision('${p.id}')" 
+                            class="btn btn-primary w-100 py-2">
+                        <i class="bi bi-play-circle me-1"></i> ATENDER AHORA
+                    </button>
+                `;
+            } else {
+                botonHtml = `
+                    <button class="btn btn-outline-secondary w-100 py-2" disabled>
+                        <i class="bi bi-clock me-1"></i> En espera
+                    </button>
+                `;
+            }
+            
+            html += `
+                <div class="card mb-3 ${bordeClase} border-start-0 border-end-0 border-bottom-0 border-top-0 border-5">
+                    <div class="card-body">
+                        <div class="row align-items-center">
+                            <div class="col-md-8">
+                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                    <div>
+                                        <h4 class="fw-bold mb-1 paciente-nombre">${p.nombre}</h4>
+                                        <div class="d-flex flex-wrap gap-2 mb-2">
+                                            <span class="badge bg-secondary edad-badge">${p.edad} años</span>
+                                            <span class="badge bg-light text-dark border especialidad-badge">${p.especialidad || 'General'}</span>
+                                            <span class="badge ${badgeClase} prioridad-badge">
+                                                Nivel ${p.nivel_prioridad}
+                                            </span>
+                                            <span class="badge ${estaRetrasado ? 'bg-danger' : 'bg-success'} tiempo-badge">
+                                                <i class="bi bi-clock me-1"></i> ${p.minutosEspera} min
+                                            </span>
+                                        </div>
+                                    </div>
+                                    ${index === 0 ? 
+                                        '<span class="badge bg-success fs-6"><i class="bi bi-arrow-right me-1"></i>SIGUIENTE</span>' : 
+                                        ''
+                                    }
+                                </div>
+                                
+                                ${alertasHtml}
+                                
+                                <div class="mb-3">
+                                    <strong>Motivo de consulta:</strong>
+                                    <p class="mb-0">${p.motivo || 'Sin motivo especificado'}</p>
+                                </div>
+                                
+                                <div class="d-flex flex-wrap">
+                                    <div class="vital-box me-3 mb-2">
+                                        <strong>T/A</strong>
+                                        <span>${v.ta || '--'}</span>
+                                    </div>
+                                    <div class="vital-box me-3 mb-2">
+                                        <strong>Temp</strong>
+                                        <span>${v.temp || '--'}°C</span>
+                                    </div>
+                                    <div class="vital-box me-3 mb-2">
+                                        <strong>SpO2</strong>
+                                        <span>${v.spo2 || '--'}%</span>
+                                    </div>
+                                    <div class="vital-box me-3 mb-2">
+                                        <strong>F.C.</strong>
+                                        <span>${v.fc || '--'}</span>
+                                    </div>
+                                    <div class="vital-box mb-2">
+                                        <strong>Peso</strong>
+                                        <span>${v.peso || '--'} kg</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-4 mt-3 mt-md-0">
+                                <div class="d-grid">
+                                    ${botonHtml}
+                                </div>
+                                ${p.antecedentes ? 
+                                    `<div class="mt-2">
+                                        <small class="text-muted"><strong>Antecedentes:</strong> ${p.antecedentes}</small>
+                                    </div>` : 
+                                    ''
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        });
+        
+        listaDiv.innerHTML = html;
+    }
+
+    // FUNCIONES GLOBALES
+    window.abrirModalDecision = async (id) => {
+        pacienteSeleccionado = todosLosPacientes.find(p => p.id === id);
+        
+        if (!pacienteSeleccionado) {
+            alert("No se encontró el paciente seleccionado");
             return;
         }
-
-        pacientes.forEach((p, index) => {
-            const tiempoLimite = TIEMPOS_MAX[p.nivel_prioridad];
-            const estaRetrasado = p.minutosEspera > tiempoLimite;
-            const v = p.vitales || { ta: '--', temp: '--', spo2: '--' };
-
-            let alertasHtml = p.signosAlarma && p.signosAlarma.length > 0 
-                ? `<div class="text-danger fw-bold small mb-2"><i class="bi bi-exclamation-circle-fill"></i> ${p.signosAlarma.join(", ")}</div>` : '';
-
-            let botonHtml = index === 0 
-                ? `<button onclick="abrirModalDecision('${p.id}', '${p.nombre}')" class="btn btn-primary w-100 shadow">ATENDER</button>`
-                : `<button class="btn btn-outline-secondary btn-sm w-100" disabled>En espera</button>`;
-
-            let html = `
-                <div class="card mb-3 shadow-sm borde-${p.nivel_prioridad} ${estaRetrasado ? 'tiempo-excedido' : ''}">
-                    <div class="card-body row">
-                        <div class="col-md-9">
-                            ${estaRetrasado ? '<span class="badge bg-danger mb-1">TIEMPO EXCEDIDO</span>' : ''}
-                            <div class="d-flex justify-content-between"><h4 class="fw-bold m-0">${p.nombre}</h4><span class="badge bg-secondary">${p.especialidad}</span></div>
-                            <small class="text-muted d-block mb-2">${p.edad} años - Espera: ${p.minutosEspera} min</small>
-                            <div class="mb-2"><span class="vital-box"><strong>T/A</strong>${v.ta}</span><span class="vital-box"><strong>Temp</strong>${v.temp}</span><span class="vital-box"><strong>SpO2</strong>${v.spo2}%</span></div>
-                            ${alertasHtml}
-                            <p class="mb-0 fst-italic">"${p.motivo}"</p>
-                        </div>
-                        <div class="col-md-3 d-flex align-items-center mt-2">${botonHtml}</div>
-                    </div>
-                </div>`;
-            listaDiv.innerHTML += html;
-        });
-    }
-
-    // Funciones Globales para el Modal
-    window.abrirModalDecision = (id, nombre) => {
+        
+        // Llenar información del modal
         document.getElementById('pacienteIdActual').value = id;
-        document.getElementById('nombrePacienteModal').innerText = nombre;
-        document.getElementById('ubicacionDetalle').value = ""; // Limpiar campo
+        document.getElementById('nombrePacienteModal').textContent = pacienteSeleccionado.nombre;
+        document.getElementById('pacienteEdad').textContent = `${pacienteSeleccionado.edad} años`;
+        document.getElementById('pacienteEspecialidad').textContent = pacienteSeleccionado.especialidad || 'General';
+        document.getElementById('pacienteMotivo').textContent = pacienteSeleccionado.motivo || 'Sin motivo especificado';
+        
+        const v = pacienteSeleccionado.vitales || {};
+        document.getElementById('pacienteTA').textContent = v.ta || '--';
+        document.getElementById('pacienteTemp').textContent = v.temp ? `${v.temp}°C` : '--';
+        document.getElementById('pacienteSpO2').textContent = v.spo2 ? `${v.spo2}%` : '--';
+        
+        // Resetear selección de destino
+        document.getElementById('destinoPaciente').value = '';
+        document.getElementById('ubicacionDetalle').value = '';
+        document.getElementById('btnConfirmar').disabled = true;
+        
+        // Resetear selección visual
+        document.querySelectorAll('.modal-option').forEach(option => {
+            option.classList.remove('selected', 'border-primary');
+        });
+        
+        // Configurar eventos para opciones de destino
+        document.querySelectorAll('.modal-option').forEach(option => {
+            option.addEventListener('click', function() {
+                const destino = this.getAttribute('data-destino');
+                
+                // Remover selección anterior
+                document.querySelectorAll('.modal-option').forEach(opt => {
+                    opt.classList.remove('selected', 'border-primary');
+                });
+                
+                // Agregar selección actual
+                this.classList.add('selected', 'border-primary');
+                document.getElementById('destinoPaciente').value = destino;
+                document.getElementById('btnConfirmar').disabled = false;
+            });
+        });
+        
         decisionModal.show();
-    }
+    };
 
     window.confirmarMovimiento = async () => {
         const id = document.getElementById('pacienteIdActual').value;
         const destino = document.getElementById('destinoPaciente').value;
         const detalle = document.getElementById('ubicacionDetalle').value || "Sin detalles específicos";
         
-        // Si es ALTA, lo sacamos del sistema activo (estado: 'historial')
-        // Si sigue en hospital, cambiamos estado a 'seguimiento'
-        const nuevoEstado = destino === 'ALTA' ? 'historial' : 'seguimiento';
-
+        if (!destino) {
+            alert("Por favor seleccione un destino para el paciente");
+            return;
+        }
+        
         try {
+            // Mapear destino a nuevo estado
+            let nuevoEstado = '';
+            switch(destino) {
+                case 'ALTA':
+                    nuevoEstado = 'alta';
+                    break;
+                case 'OBSERVACION':
+                    nuevoEstado = 'observacion';
+                    break;
+                case 'CIRUGIA':
+                    nuevoEstado = 'cirugia';
+                    break;
+                case 'HOSPITALIZACION':
+                    nuevoEstado = 'hospitalizado';
+                    break;
+                case 'TRASLADO':
+                    nuevoEstado = 'trasladado';
+                    break;
+                default:
+                    nuevoEstado = 'finalizado';
+            }
+            
+            // Actualizar documento en Firebase
             await updateDoc(doc(db, "pacientes", id), { 
                 estado: nuevoEstado,
                 ubicacion_actual: destino,
                 detalle_ubicacion: detalle,
-                fecha_atencion: new Date()
+                fecha_atencion: new Date(),
+                atendido_por: "Doctor actual",
+                fecha_alta: destino === 'ALTA' ? new Date() : null
             });
+            
             decisionModal.hide();
-            alert("✅ Paciente actualizado correctamente");
-        } catch (error) { console.error(error); alert("Error al actualizar"); }
-    }
-
-    window.alternarTema = () => {
-        const isDark = document.documentElement.getAttribute('data-bs-theme') === 'dark';
-        document.documentElement.setAttribute('data-bs-theme', isDark ? 'light' : 'dark');
-        document.body.classList.toggle('bg-dark'); document.body.classList.toggle('bg-light');
-        localStorage.setItem('tema', isDark ? 'light' : 'dark');
-    }
+            
+            // Mostrar confirmación
+            alert(`✅ Paciente actualizado correctamente\nDestino: ${destino}\nObservaciones: ${detalle}`);
+            
+        } catch (error) {
+            console.error("Error al actualizar paciente:", error);
+            alert("❌ Error al actualizar el paciente. Verifique la conexión.");
+        }
+    };
 </script>
+
+<!-- ============================
+     MODO OSCURO
+============================ -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  const body = document.body;
+  const btn = document.getElementById("darkModeBtn");
+
+  function aplicarModo(modo){
+      if(modo === "dark"){
+          // Modo oscuro
+          body.classList.add("dark-mode");
+          body.classList.remove("light-mode");
+          btn.innerHTML = '<i class="bi bi-sun-fill"></i>';
+          document.documentElement.setAttribute('data-bs-theme', 'dark');
+      } else {
+          // Modo claro
+          body.classList.add("light-mode");
+          body.classList.remove("dark-mode");
+          btn.innerHTML = '<i class="bi bi-moon-stars-fill"></i>';
+          document.documentElement.setAttribute('data-bs-theme', 'light');
+      }
+  }
+
+  const modoGuardado = localStorage.getItem("modo") || "light";
+  aplicarModo(modoGuardado);
+
+  btn.addEventListener("click", function(){
+      const nuevoModo = body.classList.contains("dark-mode") ? "light" : "dark";
+      localStorage.setItem("modo", nuevoModo);
+      aplicarModo(nuevoModo);
+  });
+
+  window.addEventListener("storage", function(e){ 
+      if(e.key === "modo") aplicarModo(e.newValue); 
+  });
+</script>
+
 </body>
 </html>

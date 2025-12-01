@@ -12,4 +12,422 @@
         .vital-box { background-color: #e9ecef; border-radius: 5px; padding: 5px; text-align: center; font-size: 0.85rem; margin-right: 5px; display: inline-block; min-width: 60px; }
         .vital-box strong { display: block; color: #495057; font-size: 0.7rem; text-transform: uppercase; }
         [data-bs-theme="dark"] .vital-box { background-color: #343a40; color: #fff; }
+         /* Estilos adicionales */
+        .paciente-card {
+            transition: all 0.3s ease;
+            border-left: 5px solid;
+        }
+        .paciente-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        .priority-1 { border-left-color: #dc3545; }
+        .priority-2 { border-left-color: #fd7e14; }
+        .priority-3 { border-left-color: #ffc107; }
+        .priority-4 { border-left-color: #28a745; }
+        .priority-5 { border-left-color: #0d6efd; }
+        
+        .vital-box {
+            display: inline-block;
+            background: #f8f9fa;
+            padding: 8px 12px;
+            margin: 5px;
+            border-radius: 8px;
+            border: 1px solid #dee2e6;
+            text-align: center;
+            min-width: 80px;
+        }
+        .vital-box strong {
+            display: block;
+            font-size: 0.8rem;
+            color: #6c757d;
+        }
+        
+        .tiempo-excedido {
+            animation: pulse-alert 2s infinite;
+            border: 2px solid #dc3545 !important;
+        }
+        
+        @keyframes pulse-alert {
+            0% { box-shadow: 0 0 0 0 rgba(220, 53, 69, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(220, 53, 69, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(220, 53, 69, 0); }
+        }
+        
+        .estado-badge {
+            font-size: 0.8rem;
+            padding: 4px 8px;
+            border-radius: 20px;
+        }
+        
+        /* Estilos para el modal */
+        .modal-option {
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+            border: 2px solid transparent;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .modal-option:hover {
+            border-color: #0d6efd;
+            background-color: #f8f9fa;
+        }
+        
+        /* Estilos responsivos */
+        @media (max-width: 768px) {
+            .vital-box {
+                min-width: 70px;
+                padding: 6px 8px;
+                margin: 3px;
+            }
+            .card-body {
+                padding: 1rem !important;
+            }
+        }
+        
+        /* Loader personalizado */
+        .loader {
+            width: 50px;
+            height: 50px;
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #0d6efd;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+            /* ESTILOS BASE */
+    :root {
+        --text-light: #212529;
+        --text-dark: #f8f9fa;
+        --bg-light: #f8f9fa;
+        --bg-dark: #121212;
+        --card-bg-light: #ffffff;
+        --card-bg-dark: #1e1e1e;
+        --border-light: #dee2e6;
+        --border-dark: #444;
+    }
+    
+    body {
+        transition: background-color 0.3s, color 0.3s;
+    }
+    
+    /* MODO CLARO */
+    body.light-mode {
+        background-color: var(--bg-light);
+        color: var(--text-light);
+    }
+    
+    .light-mode .card {
+        background-color: var(--card-bg-light);
+        color: var(--text-light);
+        border-color: var(--border-light);
+    }
+    
+    .light-mode .text-muted {
+        color: #6c757d !important;
+    }
+    
+    .light-mode .bg-light {
+        background-color: #f8f9fa !important;
+    }
+    
+    /* MODO OSCURO */
+    body.dark-mode {
+        background-color: var(--bg-dark);
+        color: var(--text-dark);
+    }
+    
+    .dark-mode .card {
+        background-color: var(--card-bg-dark);
+        color: var(--text-dark);
+        border-color: var(--border-dark);
+    }
+    
+    .dark-mode .text-muted {
+        color: #aaa !important;
+    }
+    
+    .dark-mode .text-primary {
+        color: #4dabf7 !important;
+    }
+    
+    .dark-mode .text-danger {
+        color: #ff6b6b !important;
+    }
+    
+    .dark-mode .text-warning {
+        color: #ffd93d !important;
+    }
+    
+    .dark-mode .text-info {
+        color: #6bc5d2 !important;
+    }
+    
+    .dark-mode .text-success {
+        color: #6bcf7f !important;
+    }
+    
+    /* Textos específicos en modo oscuro */
+    .dark-mode .paciente-nombre,
+    .dark-mode .card-body {
+        color: var(--text-dark) !important;
+    }
+    
+    .dark-mode .paciente-nombre {
+        color: #ffffff !important;
+    }
+    
+    .dark-mode .edad-badge,
+    .dark-mode .especialidad-badge {
+        color: #f8f9fa !important;
+        background-color: #333 !important;
+        border-color: #555 !important;
+    }
+    
+    .dark-mode .bg-light {
+        background-color: #2d2d2d !important;
+    }
+    
+    .dark-mode .alert-info {
+        background-color: rgba(13, 110, 253, 0.2) !important;
+        border-color: rgba(13, 110, 253, 0.3) !important;
+        color: #b3d7ff !important;
+    }
+    
+    .dark-mode .alert-danger {
+        background-color: rgba(220, 53, 69, 0.2) !important;
+        border-color: rgba(220, 53, 69, 0.3) !important;
+        color: #f8b4b8 !important;
+    }
+    
+    .dark-mode .badge.bg-light {
+        background-color: #444 !important;
+        color: #f8f9fa !important;
+    }
+    
+    .dark-mode .badge.bg-secondary {
+        background-color: #555 !important;
+        color: #f8f9fa !important;
+    }
+    
+    .dark-mode .border-primary {
+        border-color: #4dabf7 !important;
+    }
+    
+    .dark-mode .border-danger {
+        border-color: #ff6b6b !important;
+    }
+    
+    .dark-mode .border-warning {
+        border-color: #ffd93d !important;
+    }
+    
+    .dark-mode .border-info {
+        border-color: #6bc5d2 !important;
+    }
+    
+    .dark-mode .border-success {
+        border-color: #6bcf7f !important;
+    }
+    
+    /* ESTILOS GENERALES */
+    .card {
+        border-radius: 10px;
+        transition: all 0.3s ease;
+    }
+    
+    .card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    
+    .dark-mode .card:hover {
+        box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+    }
+    
+    .border-5 {
+        border-width: 5px !important;
+    }
+    
+    /* Estilos para el modal de opciones */
+    .modal-option {
+        padding: 1rem;
+        border: 2px solid #dee2e6;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.3s;
+        height: 100%;
+    }
+    
+    .modal-option:hover {
+        border-color: #0d6efd;
+        background-color: rgba(13, 110, 253, 0.05);
+        transform: translateY(-2px);
+    }
+    
+    .modal-option.selected {
+        border-color: #0d6efd;
+        background-color: rgba(13, 110, 253, 0.1);
+    }
+    
+    .dark-mode .modal-option {
+        border-color: #444;
+        background-color: #2d2d2d;
+    }
+    
+    .dark-mode .modal-option:hover {
+        border-color: #4dabf7;
+        background-color: rgba(77, 171, 247, 0.1);
+    }
+    
+    .dark-mode .modal-option.selected {
+        border-color: #4dabf7;
+        background-color: rgba(77, 171, 247, 0.2);
+    }
+    
+    /* Estilos para las cajas de signos vitales */
+    .vital-box {
+        padding: 0.5rem 1rem;
+        background-color: #f8f9fa;
+        border-radius: 6px;
+        border: 1px solid #dee2e6;
+        min-width: 80px;
+    }
+    
+    .vital-box strong {
+        display: block;
+        font-size: 0.8rem;
+        color: #6c757d;
+    }
+    
+    .vital-box span {
+        font-size: 1rem;
+        font-weight: bold;
+    }
+    
+    .dark-mode .vital-box {
+        background-color: #2d2d2d;
+        border-color: #444;
+        color: #f8f9fa;
+    }
+    
+    .dark-mode .vital-box strong {
+        color: #aaa;
+    }
+    
+    /* Animación de giro para spinner */
+    @keyframes spin {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+    }
+    
+    .spinning {
+        animation: spin 0.5s linear;
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+        h1 {
+            font-size: 1.5rem;
+        }
+        
+        .card-body {
+            padding: 1rem !important;
+        }
+        
+        .border-5 {
+            border-width: 3px !important;
+        }
+        
+        .col-md-8, .col-md-4 {
+            margin-bottom: 10px;
+        }
+        
+        .d-flex.flex-wrap.gap-2 {
+            gap: 4px !important;
+        }
+        
+        .badge {
+            font-size: 0.7rem;
+            padding: 0.25rem 0.5rem;
+        }
+        
+        .vital-box {
+            min-width: 70px;
+            padding: 0.4rem 0.8rem;
+            margin-right: 0.5rem;
+        }
+        
+        .modal-dialog {
+            margin: 0.5rem;
+        }
+        
+        .modal-option {
+            padding: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+    }
+    
+    /* Navbar en modo oscuro */
+    .dark-mode .navbar-light {
+        background-color: #1a1a1a !important;
+        border-bottom: 1px solid #333;
+    }
+    
+    .dark-mode .navbar-light .navbar-nav .nav-link {
+        color: #e0e0e0 !important;
+    }
+    
+    .dark-mode .navbar-light .navbar-nav .nav-link.active {
+        color: #4dabf7 !important;
+    }
+    
+    .dark-mode .navbar-light .navbar-brand {
+        color: #ffffff !important;
+    }
+    
+    .dark-mode .btn-outline-dark {
+        color: #e0e0e0;
+        border-color: #555;
+    }
+    
+    .dark-mode .btn-outline-dark:hover {
+        background-color: #333;
+        color: #ffffff;
+    }
+    
+    /* Modal en modo oscuro */
+    .dark-mode .modal-content {
+        background-color: #1e1e1e;
+        color: #f8f9fa;
+    }
+    
+    .dark-mode .modal-header {
+        border-bottom-color: #444;
+    }
+    
+    .dark-mode .modal-footer {
+        border-top-color: #444;
+    }
+    
+    .dark-mode .form-control,
+    .dark-mode .form-select {
+        background-color: #2d2d2d;
+        border-color: #555;
+        color: #f8f9fa;
+    }
+    
+    .dark-mode .form-control:focus,
+    .dark-mode .form-select:focus {
+        background-color: #333;
+        border-color: #4dabf7;
+        color: #f8f9fa;
+    }
  
