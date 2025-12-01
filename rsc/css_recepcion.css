@@ -1,120 +1,131 @@
-
 /* ============================================
-   🌙 MODO OSCURO
+   🎨 MODO CLARO (por defecto)
 ============================================ */
-body.dark {
-  background-color: #1b1f24 !important;
-  color: white !important;
+body {
+  background-color: #eef2f7;
+  color: #212529;
 }
 
-/* Fondo detrás del formulario */
-body.dark .container,
-body.dark .main-wrapper,
-body.dark .content-wrapper {
-    background-color: #1b1f24 !important;
+.container,
+.main-wrapper,
+.content-wrapper {
+  background-color: #eef2f7;
 }
 
-/* Tarjetas */
-body.dark .card {
-  background-color: #262b31 !important;
-  color: white !important;
-  border-color: #3a3f45 !important;
+.card {
+  background-color: white;
+  color: black;
 }
 
-/* Elementos que Bootstrap deja en blanco */
-body.dark .bg-light,
-body.dark .bg-white,
-body.dark .border,
-body.dark .card-header,
-body.dark .shadow-sm,
-body.dark .p-3,
-body.dark .container-fluid {
-  background-color: #262b31 !important;
-  color: white !important;
-  border-color: #3a3f45 !important;
+.bg-light,
+.bg-white {
+  background-color: white;
+  color: #212529;
 }
 
-/* Navbar */
-body.dark .navbar,
-body.dark .navbar-nav,
-body.dark .navbar-collapse {
-  background-color: #111418 !important;
+.navbar {
+  background-color: #e9ecef;
 }
 
-body.dark .nav-link,
-body.dark .navbar-brand,
-body.dark .navbar-nav .nav-link {
-  color: white !important;
+.nav-link,
+.navbar-brand {
+  color: #212529;
 }
 
-body.dark .nav-link.active {
-  color: #0dcaf0 !important;
-  text-decoration: underline;
-}
-
-/* ============================================
-   🩺 SIGNOS VITALES — Inputs y etiquetas
-============================================ */
-body.dark input,
-body.dark select,
-body.dark textarea,
-body.dark .form-control,
-body.dark .input-group-text {
-    background-color: #3a3f45 !important;
-    color: white !important;
-    border: 1px solid #555 !important;
-}
-
-body.dark input::placeholder {
-    color: #cfcfcf !important;
-}
-
-body.dark .label-vital,
-body.dark .text-secondary,
-body.dark .input-group-text {
-    color: #e8e8e8 !important;
-}
-
-
-/* ============================================
-   ☀️ MODO CLARO
-============================================ */
-body.light {
-  background-color: #eef2f7 !important;
-  color: #212529 !important;
-}
-
-body.light .container,
-body.light .content-wrapper {
-    background-color: #eef2f7 !important;
-}
-
-body.light .card {
-  background-color: white !important;
-  color: black !important;
-}
-
-/* Restaurar bg-light */
-body.light .bg-light {
-  background-color: white !important;
-  color: #212529 !important;
-}
-
-/* Navbar claro */
-body.light .navbar {
-  background-color: #e9ecef !important;
-}
-
-body.light .nav-link,
-body.light .navbar-brand {
-  color: #212529 !important;
-}
-
-body.light .nav-link.active {
+.nav-link.active {
   font-weight: bold;
   text-decoration: underline;
 }
 
+input,
+select,
+textarea,
+.form-control,
+.form-select,
+.input-group-text {
+  background-color: white;
+  color: #212529;
+  border: 1px solid #ced4da;
+}
+
+.input-vital {
+  font-size: 0.9rem;
+  text-align: center;
+  font-weight: bold;
+  color: #0d6efd;
+}
+
+.label-vital {
+  font-size: 0.8rem;
+  text-align: center;
+  display: block;
+  margin-bottom: 2px;
+  color: #6c757d;
+}
+
+/* ============================================
+   🌙 MODO OSCURO
+============================================ */
+body.dark-mode {
+  background-color: #1b1f24 !important;
+  color: white !important;
+}
+
+body.dark-mode .container,
+body.dark-mode .container-fluid,
+body.dark-mode .main-wrapper,
+body.dark-mode .content-wrapper {
+  background-color: #1b1f24 !important;
+}
+
+body.dark-mode .card,
+body.dark-mode .bg-light,
+body.dark-mode .bg-white,
+body.dark-mode .card-header,
+body.dark-mode .shadow-sm,
+body.dark-mode .p-3,
+body.dark-mode .container-fluid {
+  background-color: #262b31 !important;
+  color: white !important;
+  border-color: #3a3f45 !important;
+}
+
+body.dark-mode .navbar,
+body.dark-mode .navbar-nav,
+body.dark-mode .navbar-collapse {
+  background-color: #111418 !important;
+}
+
+body.dark-mode .nav-link,
+body.dark-mode .navbar-brand {
+  color: white !important;
+}
+
+body.dark-mode .nav-link.active {
+  color: #0dcaf0 !important;
+  text-decoration: underline;
+}
+
+body.dark-mode input,
+body.dark-mode select,
+body.dark-mode textarea,
+body.dark-mode .form-control,
+body.dark-mode .form-select,
+body.dark-mode .input-group-text {
+  background-color: #3a3f45 !important;
+  color: white !important;
+  border: 1px solid #555 !important;
+}
+
+body.dark-mode input::placeholder {
+  color: #cfcfcf !important;
+}
+
+body.dark-mode .label-vital,
+body.dark-mode .text-secondary,
+body.dark-mode .input-group-text {
+  color: #e8e8e8 !important;
+}
 
 /* ============================================
    🎛 BOTÓN MODO OSCURO
@@ -123,9 +134,8 @@ body.light .nav-link.active {
   border-radius: 8px;
 }
 
-
 /* ============================================
-   🎨 ESTILOS NORMALES
+   🩺 ESTILOS DE BOTONES DE PRIORIDAD
 ============================================ */
 .priority-btn { height: 50px; font-weight: bold; }
 .btn-nivel-1 { background-color: #dc3545; color: white; }
@@ -134,71 +144,17 @@ body.light .nav-link.active {
 .btn-nivel-4 { background-color: #198754; color: white; }
 .btn-nivel-5 { background-color: #0d6efd; color: white; }
 
-.input-vital {
-    font-size: 0.9rem;
-    text-align: center;
-    font-weight: bold;
-    color: #0d6efd;
-}
-
-.label-vital {
-    font-size: 0.8rem;
-    text-align: center;
-    display: block;
-    margin-bottom: 2px;
-    color: #6c757d;
-}
-
-/* ---------- Fondo por defecto — SOLO cuando NO es modo oscuro ---------- */
-body:not(.dark) {
-  background-color: #eef2f7 !important;
-  color: #212529 !important;
-}
-
-/* ---------- Forzar fondo oscuro cuando body tiene la clase .dark ---------- */
-body.dark {
-  background-color: #1b1f24 !important;
-  color: white !important;
-}
-
-/* Forzar que containers y el área alrededor del form también cambien */
-body.dark .container,
-body.dark .container-fluid,
-body.dark .main-wrapper,
-body.dark .content-wrapper {
-  background-color: #1b1f24 !important;
-}
-
-/* Forzar navbar links en modo oscuro */
-body.dark .navbar,
-body.dark .navbar .nav-link,
-body.dark .navbar-brand {
-  background-color: #111418 !important;
-  color: #ffffff !important;
-}
-
-/* Asegurar inputs, selects y áreas blancas */
-body.dark input,
-body.dark select,
-body.dark textarea,
-body.dark .form-control,
-body.dark .form-select,
-body.dark .bg-light,
-body.dark .bg-white {
-  background-color: #262b31 !important;
-  color: #ffffff !important;
-  border-color: #3a3f45 !important;
-}
-
-
-
-/* Informes */
+/* ============================================
+   📄 INFORMES DE PACIENTES
+============================================ */
 .resultado-informe { border-left: 5px solid #0d6efd; background-color: white; }
 .estado-ALTA { border-color: #198754; }
 .estado-CIRUGIA { border-color: #dc3545; }
 .estado-OBSERVACION { border-color: #ffc107; }
 
-/* Impresión */
+/* ============================================
+   🖨 IMPRESIÓN
+============================================ */
 @media print {
     body * { visibility: hidden; } 
     #formato-impresion, #formato-impresion * { visibility: visible; display: block; }

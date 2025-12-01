@@ -1,0 +1,72 @@
+ /* --------- Temas (claro / oscuro) --------- */
+
+    /* modo oscuro */
+    .dark-mode {
+      background-color: #121417 !important;
+      color: #fff !important;
+    }
+    .dark-mode .navbar { background-color: #0f1315 !important; }
+    .dark-mode .nav-link, .dark-mode .navbar-brand { color: #fff !important; }
+    .dark-mode .nav-link.active { color: #0dcaf0 !important; }
+
+    .dark-mode .card,
+    .dark-mode .bg-white,
+    .dark-mode .bg-light {
+      background-color: #1f2529 !important;
+      color: #e9eef1 !important;
+      border-color: #2f3539 !important;
+    }
+
+    .dark-mode input,
+    .dark-mode select,
+    .dark-mode textarea,
+    .dark-mode .form-control,
+    .dark-mode .form-select {
+      background-color: #23282b !important;
+      color: #e9eef1 !important;
+      border-color: #3a3f42 !important;
+    }
+
+    /* Chart.js ejes/labels (valor por defecto - se actualizará en JS) */
+    /* (Se deja sin estilo CSS; lo configuramos desde JS) */
+
+
+    /* modo claro (por defecto visual si el body NO tiene .dark-mode) */
+    body:not(.dark-mode) {
+      background-color: #f4f6f9 !important;
+      color: #212529 !important;
+    }
+    body:not(.dark-mode) .navbar { background-color: #212529 !important; }
+    body:not(.dark-mode) .nav-link,
+    body:not(.dark-mode) .navbar-brand { color: #ffffff !important; } /* se usó navbar-dark en HTML */
+
+    body:not(.dark-mode) .card,
+    body:not(.dark-mode) .bg-white,
+    body:not(.dark-mode) .bg-light {
+      background-color: #ffffff !important;
+      color: #212529 !important;
+    }
+
+    /* Ajustes visuales generales */
+    .stat-card { border: none; border-radius: 10px; transition: transform 0.3s; }
+    .stat-card:hover { transform: translateY(-5px); }
+    .icon-box { font-size: 2rem; opacity: 0.9; }
+
+    /* tarjeta de header de gráfica blanca en ambos modos: la dejamos como bg-white,
+       pero en dark-mode .bg-white ya es oscura (ver arriba) */
+    .card-header.py-3.bg-white { background-color: #ffffff; }
+
+    /* forzar que los headers queden correctos en dark-mode */
+    .dark-mode .card-header.py-3.bg-white {
+      background-color: #2a2f33 !important;
+      color: #cfe8ff !important;
+    }
+
+    /* botón de modo */
+    #darkModeBtn { border-radius: 8px; }
+
+    /* margen de la página para separar el contenido del borde superior */
+    body { margin: 0; padding: 0; }
+
+    /* evitar que alguna regla previa sobreescriba el fondo oscuro: */
+    html, body, .container { min-height: 100%; height: 100%; }
