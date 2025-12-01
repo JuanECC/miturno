@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Médico - Gestión Clínica</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="./rsc/css_doctor.css">
+</head>
+
+<body class="bg-light">
+    
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary sticky-top mb-4 shadow">
+    <div class="container">
+
+        <a href="#" class="navbar-brand h1 mb-0">
+            <i class="bi bi-activity"></i> Monitor Médico
+        </a>
+
+        <!-- Botón responsive -->
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menuNavegacion">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="menuNavegacion">
+
+            <!-- Menú principal -->
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+
+                 <li class="nav-item">
+                    <a class="nav-link" href="recepcion.html">
+                        <i class="bi bi-people"></i> Recepción
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="pantalla.html">
+                        <i class="bi bi-tv"></i> Pantalla de turnos
+                    </a>
+                </li>
+
+
+                <li class="nav-item">
+                    <a class="nav-link active" href="doctor.html">
+                        <i class="bi bi-stethoscope"></i> Doctor
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="admin.html">
+                        <i class="bi bi-gear"></i> Admin
+                    </a>
+                </li>
+
+            </ul>
+
+            <!-- Controles del lado derecho -->
+            <div class="d-flex align-items-center gap-3">
+                <div class="input-group input-group-sm">
+                    <span class="input-group-text"><i class="bi bi-search"></i></span>
+                    <input type="text" id="buscador" class="form-control" placeholder="Buscar...">
+                </div>
+
+                <select id="filtroEspecialidad" class="form-select form-select-sm" style="width: 180px;">
+                    <option value="TODOS">-- Todas --</option>
+                    <option value="Medicina General">Medicina General</option>
+                    <option value="Traumatología">Traumatología</option>
+                    <option value="Cardiología">Cardiología</option>
+                    <option value="Pediatría">Pediatría</option>
+                </select>
+
+                <button class="btn btn-outline-light btn-sm" onclick="alternarTema()">
+                    <i class="bi bi-moon-stars-fill"></i>
+                </button>
+            </div>
+
+        </div>
+    </div>
+</nav>
+
+
+<div class="container">
+    <div id="lista-doctor">
+        <div class="text-center mt-5"><div class="spinner-border text-primary"></div></div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalDecision" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title">🏥 Definir Destino del Paciente</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="pacienteIdActual">
+                <p>Estás atendiendo a: <strong id="nombrePacienteModal" class="fs-5"></strong></p>
+                
+                <div class="mb-3">
+                    <label class="form-label fw-bold">¿Cuál es el siguiente paso?</label>
+                    <select id="destinoPaciente" class="form-select form-select-lg">
+                        <option value="ALTA">✅ Dar de Alta (A casa)</option>
+                        <option value="OBSERVACION">👀 Pase a Observación (Camilla)</option>
+                        <option value="CIRUGIA">🔪 Pase a Cirugía / Quirófano</option>
+                        <option value="HOSPITALIZACION">🛏️ Ingreso a Piso (Habitación)</option>
+                        <option value="TRASLADO">🚑 Traslado a otro Hospital</option>
+                    </select>
+                </div>
+                
+                <div class="mb-3">
+                    <label class="form-label">Detalles de ubicación / Instrucciones:</label>
+                    <input type="text" id="ubicacionDetalle" class="form-control" placeholder="Ej. Cama 4, Quirófano 2, Habitación 305...">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" onclick="confirmarMovimiento()">Guardar y Finalizar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="module">
+    import { db } from './firebase-config.js';
+    import { collection, query, where, onSnapshot, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+    // Inicializar Modal de Bootstrap
+    const decisionModal = new bootstrap.Modal(document.getElementById('modalDecision'));
+    
+    const listaDiv = document.getElementById('lista-doctor');
+    const filtroSelect = document.getElementById('filtroEspecialidad');
+    const buscadorInput = document.getElementById('buscador');
+    const TIEMPOS_MAX = { 1: 0, 2: 10, 3: 60, 4: 120, 5: 240 };
+    let todosLosPacientes = [];
+
+    // Cargar filtros guardados
+    if (localStorage.getItem('filtro_medico')) filtroSelect.value = localStorage.getItem('filtro_medico');
+    if (localStorage.getItem('tema') === 'dark') alternarTema();
+
+    const q = query(
+    collection(db, "pacientes"),
+    where("estado", "not-in", ["historial", "seguimiento", "atendido", "alta", "finalizado"])
+);
+
+
+    onSnapshot(q, (snapshot) => {
+        todosLosPacientes = [];
+        const ahora = new Date();
+        snapshot.forEach(doc => {
+            const data = doc.data();
+            let minutosEspera = 0;
+            if (data.fecha_ingreso) minutosEspera = Math.floor((ahora - data.fecha_ingreso.toDate()) / 60000);
+            todosLosPacientes.push({ id: doc.id, ...data, minutosEspera });
+        });
+        renderizarPacientes();
+    });
+
+    filtroSelect.addEventListener('change', () => {
+        localStorage.setItem('filtro_medico', filtroSelect.value);
+        renderizarPacientes();
+    });
+    buscadorInput.addEventListener('input', renderizarPacientes);
+
+    function renderizarPacientes() {
+        const especialidad = filtroSelect.value;
+        const busqueda = buscadorInput.value.toLowerCase();
+        
+        let filtrados = todosLosPacientes;
+        if (especialidad !== "TODOS") filtrados = filtrados.filter(p => p.especialidad === especialidad);
+        if (busqueda) filtrados = filtrados.filter(p => p.nombre.toLowerCase().includes(busqueda));
+
+        filtrados.sort((a, b) => (a.nivel_prioridad - b.nivel_prioridad) || (a.fecha_ingreso - b.fecha_ingreso));
+        dibujarHTML(filtrados);
+    }
+
+    function dibujarHTML(pacientes) {
+        listaDiv.innerHTML = "";
+        if(pacientes.length === 0) {
+            listaDiv.innerHTML = '<div class="alert alert-secondary text-center">Sin pacientes pendientes.</div>';
+            return;
+        }
+
+        pacientes.forEach((p, index) => {
+            const tiempoLimite = TIEMPOS_MAX[p.nivel_prioridad];
+            const estaRetrasado = p.minutosEspera > tiempoLimite;
+            const v = p.vitales || { ta: '--', temp: '--', spo2: '--' };
+
+            let alertasHtml = p.signosAlarma && p.signosAlarma.length > 0 
+                ? `<div class="text-danger fw-bold small mb-2"><i class="bi bi-exclamation-circle-fill"></i> ${p.signosAlarma.join(", ")}</div>` : '';
+
+            let botonHtml = index === 0 
+                ? `<button onclick="abrirModalDecision('${p.id}', '${p.nombre}')" class="btn btn-primary w-100 shadow">ATENDER</button>`
+                : `<button class="btn btn-outline-secondary btn-sm w-100" disabled>En espera</button>`;
+
+            let html = `
+                <div class="card mb-3 shadow-sm borde-${p.nivel_prioridad} ${estaRetrasado ? 'tiempo-excedido' : ''}">
+                    <div class="card-body row">
+                        <div class="col-md-9">
+                            ${estaRetrasado ? '<span class="badge bg-danger mb-1">TIEMPO EXCEDIDO</span>' : ''}
+                            <div class="d-flex justify-content-between"><h4 class="fw-bold m-0">${p.nombre}</h4><span class="badge bg-secondary">${p.especialidad}</span></div>
+                            <small class="text-muted d-block mb-2">${p.edad} años - Espera: ${p.minutosEspera} min</small>
+                            <div class="mb-2"><span class="vital-box"><strong>T/A</strong>${v.ta}</span><span class="vital-box"><strong>Temp</strong>${v.temp}</span><span class="vital-box"><strong>SpO2</strong>${v.spo2}%</span></div>
+                            ${alertasHtml}
+                            <p class="mb-0 fst-italic">"${p.motivo}"</p>
+                        </div>
+                        <div class="col-md-3 d-flex align-items-center mt-2">${botonHtml}</div>
+                    </div>
+                </div>`;
+            listaDiv.innerHTML += html;
+        });
+    }
+
+    // Funciones Globales para el Modal
+    window.abrirModalDecision = (id, nombre) => {
+        document.getElementById('pacienteIdActual').value = id;
+        document.getElementById('nombrePacienteModal').innerText = nombre;
+        document.getElementById('ubicacionDetalle').value = ""; // Limpiar campo
+        decisionModal.show();
+    }
+
+    window.confirmarMovimiento = async () => {
+        const id = document.getElementById('pacienteIdActual').value;
+        const destino = document.getElementById('destinoPaciente').value;
+        const detalle = document.getElementById('ubicacionDetalle').value || "Sin detalles específicos";
+        
+        // Si es ALTA, lo sacamos del sistema activo (estado: 'historial')
+        // Si sigue en hospital, cambiamos estado a 'seguimiento'
+        const nuevoEstado = destino === 'ALTA' ? 'historial' : 'seguimiento';
+
+        try {
+            await updateDoc(doc(db, "pacientes", id), { 
+                estado: nuevoEstado,
+                ubicacion_actual: destino,
+                detalle_ubicacion: detalle,
+                fecha_atencion: new Date()
+            });
+            decisionModal.hide();
+            alert("✅ Paciente actualizado correctamente");
+        } catch (error) { console.error(error); alert("Error al actualizar"); }
+    }
+
+    window.alternarTema = () => {
+        const isDark = document.documentElement.getAttribute('data-bs-theme') === 'dark';
+        document.documentElement.setAttribute('data-bs-theme', isDark ? 'light' : 'dark');
+        document.body.classList.toggle('bg-dark'); document.body.classList.toggle('bg-light');
+        localStorage.setItem('tema', isDark ? 'light' : 'dark');
+    }
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

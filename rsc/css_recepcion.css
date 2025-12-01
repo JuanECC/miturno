@@ -1,0 +1,207 @@
+/* ============================================
+   🎨 MODO CLARO (por defecto)
+============================================ */
+body {
+  background-color: #eef2f7;
+  color: #212529;
+}
+
+.container,
+.main-wrapper,
+.content-wrapper {
+  background-color: #eef2f7;
+}
+
+.card {
+  background-color: white;
+  color: black;
+}
+
+.bg-light,
+.bg-white {
+  background-color: white;
+  color: #212529;
+}
+
+.navbar {
+  background-color: #e9ecef;
+}
+
+.nav-link,
+.navbar-brand {
+  color: #212529;
+}
+
+.nav-link.active {
+  font-weight: bold;
+  text-decoration: underline;
+}
+
+input,
+select,
+textarea,
+.form-control,
+.form-select,
+.input-group-text {
+  background-color: white;
+  color: #212529;
+  border: 1px solid #ced4da;
+}
+
+.input-vital {
+  font-size: 0.9rem;
+  text-align: center;
+  font-weight: bold;
+  color: #0d6efd;
+}
+
+.label-vital {
+  font-size: 0.8rem;
+  text-align: center;
+  display: block;
+  margin-bottom: 2px;
+  color: #6c757d;
+}
+
+/* ============================================
+   🌙 MODO OSCURO
+============================================ */
+body.dark-mode {
+  background-color: #1b1f24 !important;
+  color: white !important;
+}
+
+body.dark-mode .container,
+body.dark-mode .container-fluid,
+body.dark-mode .main-wrapper,
+body.dark-mode .content-wrapper {
+  background-color: #1b1f24 !important;
+}
+
+body.dark-mode .card,
+body.dark-mode .bg-light,
+body.dark-mode .bg-white,
+body.dark-mode .card-header,
+body.dark-mode .shadow-sm,
+body.dark-mode .p-3,
+body.dark-mode .container-fluid {
+  background-color: #262b31 !important;
+  color: white !important;
+  border-color: #3a3f45 !important;
+}
+
+body.dark-mode .navbar,
+body.dark-mode .navbar-nav,
+body.dark-mode .navbar-collapse {
+  background-color: #111418 !important;
+}
+
+body.dark-mode .nav-link,
+body.dark-mode .navbar-brand {
+  color: white !important;
+}
+
+body.dark-mode .nav-link.active {
+  color: #0dcaf0 !important;
+  text-decoration: underline;
+}
+
+body.dark-mode input,
+body.dark-mode select,
+body.dark-mode textarea,
+body.dark-mode .form-control,
+body.dark-mode .form-select,
+body.dark-mode .input-group-text {
+  background-color: #3a3f45 !important;
+  color: white !important;
+  border: 1px solid #555 !important;
+}
+
+body.dark-mode input::placeholder {
+  color: #cfcfcf !important;
+}
+
+body.dark-mode .label-vital,
+body.dark-mode .text-secondary,
+body.dark-mode .input-group-text {
+  color: #e8e8e8 !important;
+}
+
+/* ============================================
+   🎛 BOTÓN MODO OSCURO
+============================================ */
+#darkModeBtn {
+  border-radius: 8px;
+}
+
+/* ============================================
+   🩺 ESTILOS DE BOTONES DE PRIORIDAD
+============================================ */
+.priority-btn { height: 50px; font-weight: bold; }
+.btn-nivel-1 { background-color: #dc3545; color: white; }
+.btn-nivel-2 { background-color: #fd7e14; color: white; }
+.btn-nivel-3 { background-color: #ffc107; color: black; }
+.btn-nivel-4 { background-color: #198754; color: white; }
+.btn-nivel-5 { background-color: #0d6efd; color: white; }
+
+/* ============================================
+   📄 INFORMES DE PACIENTES
+============================================ */
+.resultado-informe { border-left: 5px solid #0d6efd; background-color: white; }
+.estado-ALTA { border-color: #198754; }
+.estado-CIRUGIA { border-color: #dc3545; }
+.estado-OBSERVACION { border-color: #ffc107; }
+
+/* ============================================
+   🖨 IMPRESIÓN
+============================================ */
+@media print {
+    body * { visibility: hidden; } 
+    #formato-impresion, #formato-impresion * { visibility: visible; display: block; }
+    #formato-impresion {
+        position: absolute; left: 0; top: 0; width: 100%;
+        background: white; padding: 40px;
+        font-family: 'Times New Roman', serif;
+    }
+    .no-print { display: none !important; }
+}
+/* Hoja de Admisión - impresión y vista previa */
+#formato-impresion {
+    max-width: 700px;
+    margin: 20px auto;
+    padding: 20px;
+    border-radius: 10px;
+    border: 2px solid #0d6efd;
+    background-color: white;
+    color: #212529;
+    font-family: Arial, sans-serif;
+}
+
+#formato-impresion h2 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+#formato-impresion .card-signos {
+    margin-top: 15px;
+}
+
+#formato-impresion .nivel-prioridad {
+    text-align: center;
+    font-size: 1.2rem;
+    font-weight: bold;
+    padding: 10px;
+    border-radius: 5px;
+    color: white;
+}
+
+.nivel-1 { background-color: #dc3545; }
+.nivel-2 { background-color: #fd7e14; }
+.nivel-3 { background-color: #ffc107; color: black; }
+.nivel-4 { background-color: #198754; }
+.nivel-5 { background-color: #0d6efd; }
+
+#formato-impresion .row p {
+    margin-bottom: 5px;
+}
+

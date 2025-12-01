@@ -1,0 +1,59 @@
+.light-mode {
+  background-color: #f8f9fa !important;
+  color: #212529 !important;
+}
+
+.light-mode .card {
+  background-color: white !important;
+  color: #212529 !important;
+}
+
+.light-mode .navbar {
+  background-color: #e9ecef !important;
+}
+
+.light-mode .nav-link {
+  color: #212529 !important;
+}
+
+.light-mode .btn-outline-light {
+  color: #212529 !important;
+  border-color: #212529 !important;
+}
+
+/* text-muted que cambia según el modo */
+.light-mode .text-muted {
+  color: #6c757d !important;
+}
+
+body:not(.light-mode) .text-muted {
+  color: #bdbdbd !important;
+}
+
+/* ============================
+   MODO OSCURO (DEFAULT)
+============================ */
+body { 
+  background-color: #212529; 
+  color: white; 
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+}
+
+.turno-card { 
+  margin-bottom: 15px; 
+  border-radius: 8px; 
+  border: none;
+  font-size: 1.4rem; 
+  transition: all 0.5s ease;
+}
+
+/* Colores Manchester */
+.prio-1 { border-left: 12px solid #dc3545; background-color: #2c2c2c; }
+.prio-2 { border-left: 12px solid #fd7e14; background-color: #2c2c2c; }
+.prio-3 { border-left: 12px solid #ffc107; background-color: #2c2c2c; }
+.prio-4 { border-left: 12px solid #198754; background-color: #2c2c2c; }
+.prio-5 { border-left: 12px solid #0d6efd; background-color: #2c2c2c; }
+
+/* Scroll oculto */
+#lista-pacientes::-webkit-scrollbar { display: none; }
+#lista-pacientes { -ms-overflow-style: none; scrollbar-width: none; }

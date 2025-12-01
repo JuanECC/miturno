@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dirección Médica - Estadísticas</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="./rsc/css_admin.css">
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4 shadow" id="mainNav">
+    <div class="container">
+
+        <a class="navbar-brand fw-bold" href="#">
+            🏥 CENTRO DE MANDO - URGENCIAS
+        </a>
+
+        <!-- Botón responsive -->
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menuAdmin">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="menuAdmin">
+
+            <!-- Menú -->
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+
+                <li class="nav-item">
+                    <a class="nav-link" href="recepcion.html">🏥 Recepción</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="pantalla.html">🖥️ Pantalla de turnos</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="doctor.html">👨‍⚕️ Doctor</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link active" href="admin.html">⚙️ Admin</a>
+                </li>
+
+            </ul>
+
+            <!-- BOTÓN MODO OSCURO -->
+            <button id="darkModeBtn" class="btn btn-outline-light ms-3">🌙</button>
+
+        </div>
+    </div>
+</nav>
+
+
+
+<div class="container">
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card stat-card bg-primary text-white shadow">
+                <div class="card-body d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="text-uppercase mb-1">Total Pacientes</h6>
+                        <h2 class="mb-0 fw-bold" id="total-pacientes">0</h2>
+                    </div>
+                    <div class="icon-box">👥</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card stat-card bg-danger text-white shadow">
+                <div class="card-body d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="text-uppercase mb-1">Críticos (N1 y N2)</h6>
+                        <h2 class="mb-0 fw-bold" id="total-criticos">0</h2>
+                    </div>
+                    <div class="icon-box">🚨</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card stat-card bg-success text-white shadow">
+                <div class="card-body d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="text-uppercase mb-1">Atendidos Hoy</h6>
+                        <h2 class="mb-0 fw-bold" id="total-atendidos">0</h2>
+                    </div>
+                    <div class="icon-box">✅</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card stat-card bg-info text-white shadow">
+                <div class="card-body d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="text-uppercase mb-1">Saturación</h6>
+                        <h2 class="mb-0 fw-bold" id="saturacion">0%</h2>
+                    </div>
+                    <div class="icon-box">📊</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3 bg-white">
+                    <h6 class="m-0 font-weight-bold text-primary">Distribución por Nivel de Triaje (Actual)</h6>
+                </div>
+                <div class="card-body">
+                    <canvas id="chartNiveles"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3 bg-white">
+                    <h6 class="m-0 font-weight-bold text-primary">Demanda por Especialidad</h6>
+                </div>
+                <div class="card-body">
+                    <canvas id="chartEspecialidad"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="module">
+    import { db } from './firebase-config.js';
+    import { collection, query, onSnapshot, where } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+    // Variables para las gráficas
+    let chartNivelesInstancia = null;
+    let chartEspecialidadInstancia = null;
+
+    // Escuchar TODOS los pacientes (espera y atendidos) para estadísticas
+    // Nota: En un sistema real esto se optimiza, para el concurso leemos todo.
+    const q = query(collection(db, "pacientes"));
+
+    onSnapshot(q, (snapshot) => {
+        let totalEspera = 0;
+        let criticos = 0;
+        let atendidos = 0;
+        
+        // Contadores para gráficas
+        let conteoNiveles = [0, 0, 0, 0, 0]; // Niveles 1 al 5
+        let conteoEspecialidad = {};
+
+        snapshot.forEach(doc => {
+            const data = doc.data();
+            // Estado real en espera
+const enEspera = ["espera", "pendiente", "triage", "registrado"];
+
+// Estado real atendido
+const esAtendido = ["atendido", "finalizado", "alta"];
+
+// Normalizamos estado
+const estado = (data.estado || "").toLowerCase().trim();
+
+if (esAtendido.includes(estado)) {
+    atendidos++;
+} 
+else if (enEspera.includes(estado)) {
+    totalEspera++;
+
+    if (data.nivel_prioridad <= 2) criticos++;
+
+    if(data.nivel_prioridad >= 1 && data.nivel_prioridad <= 5) {
+        conteoNiveles[data.nivel_prioridad - 1]++;
+    }
+
+    const esp = data.especialidad || "General";
+    conteoEspecialidad[esp] = (conteoEspecialidad[esp] || 0) + 1;
+}
+
+            
+        });
+
+        // Actualizar Tarjetas
+        document.getElementById('total-pacientes').innerText = totalEspera;
+        document.getElementById('total-criticos').innerText = criticos;
+        document.getElementById('total-atendidos').innerText = atendidos;
+        
+        // Calculo simple de saturación (Asumiendo capacidad de 20 pacientes)
+        let porcentaje = Math.min(100, Math.round((totalEspera / 20) * 100));
+        document.getElementById('saturacion').innerText = porcentaje + "%";
+
+        // Actualizar Gráficas
+        actualizarGraficaBarras(conteoNiveles);
+        actualizarGraficaDona(conteoEspecialidad);
+    });
+
+    function actualizarGraficaBarras(data) {
+        const ctx = document.getElementById('chartNiveles').getContext('2d');
+        
+        if (chartNivelesInstancia) chartNivelesInstancia.destroy();
+
+        chartNivelesInstancia = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['Nivel 1 (Resucitación)', 'Nivel 2 (Emergencia)', 'Nivel 3 (Urgencia)', 'Nivel 4 (Menor)', 'Nivel 5 (No Urgente)'],
+                datasets: [{
+                    label: 'Pacientes en Espera',
+                    data: data,
+                    backgroundColor: ['#dc3545', '#fd7e14', '#ffc107', '#198754', '#0d6efd'],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } },
+                responsive: true,
+                plugins: { legend: { display: false } }
+            }
+        });
+    }
+
+    function actualizarGraficaDona(dataObj) {
+        const ctx = document.getElementById('chartEspecialidad').getContext('2d');
+        const labels = Object.keys(dataObj);
+        const data = Object.values(dataObj);
+
+        if (chartEspecialidadInstancia) chartEspecialidadInstancia.destroy();
+
+        chartEspecialidadInstancia = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: labels,
+                datasets: [{
+                    data: data,
+                    backgroundColor: ['#4e73df', '#1cc88a', '#36b9cc', '#f6c23e', '#e74a3b', '#858796'],
+                }]
+            },
+            options: { responsive: true }
+        });
+    }
+</script>
+
+<script>
+ const body = document.body;
+const btn = document.getElementById("darkModeBtn");
+
+// Función para aplicar el modo
+function aplicarModo(modo) {
+    if (modo === "dark") {
+        body.classList.add("dark-mode");
+        body.classList.remove("light-mode");
+        btn.textContent = "🌙";
+    } else {
+        body.classList.add("light-mode");
+        body.classList.remove("dark-mode");
+        btn.textContent = "☀️";
+    }
+}
+
+// Leer preferencia guardada
+const modoGuardado = localStorage.getItem("modo") || "light";
+aplicarModo(modoGuardado);
+
+// Cambiar modo al hacer click
+btn.addEventListener("click", () => {
+    const nuevoModo = body.classList.contains("dark-mode") ? "light" : "dark";
+    localStorage.setItem("modo", nuevoModo);
+    aplicarModo(nuevoModo);
+});
+
+// Opcional: sincronizar en otras pestañas abiertas
+window.addEventListener("storage", (e) => {
+    if (e.key === "modo") aplicarModo(e.newValue);
+});
+;
+</script>
+
+</body>
+</html>
