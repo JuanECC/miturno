@@ -1,0 +1,15 @@
+  
+        body { transition: background-color 0.3s, color 0.3s; }
+        .borde-1 { border-left: 10px solid #dc3545; }
+        .borde-2 { border-left: 10px solid #fd7e14; }
+        .borde-3 { border-left: 10px solid #ffc107; }
+        .borde-4 { border-left: 10px solid #198754; }
+        .borde-5 { border-left: 10px solid #0d6efd; }
+        
+        .tiempo-excedido { border: 2px solid #dc3545 !important; animation: latido 2s infinite; }
+        @keyframes latido { 50% { box-shadow: 0 0 15px #dc3545; } }
+        
+        .vital-box { background-color: #e9ecef; border-radius: 5px; padding: 5px; text-align: center; font-size: 0.85rem; margin-right: 5px; display: inline-block; min-width: 60px; }
+        .vital-box strong { display: block; color: #495057; font-size: 0.7rem; text-transform: uppercase; }
+        [data-bs-theme="dark"] .vital-box { background-color: #343a40; color: #fff; }
+ 
