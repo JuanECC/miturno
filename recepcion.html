@@ -19,9 +19,9 @@
     <div class="collapse navbar-collapse" id="menu">
       <ul class="navbar-nav ms-auto">
         <li class="nav-item"><a class="nav-link" href="pantalla.html">🖥️ Pantalla de turnos</a></li>
-        <li class="nav-item"><a class="nav-link" href="doctor.html">👨‍⚕️ Módulo Doctor</a></li>
+        <li class="nav-item"><a class="nav-link" href="doctor.html">👨‍⚕️ Doctor</a></li>
         <li class="nav-item"><a class="nav-link" href="admin.html">⚙️ Administración</a></li>
-        <li class="nav-item"><button id="darkModeBtn" class="btn btn-outline-light ms-3">🌙</button></li>
+        <li class="nav-item"><button id="darkModeBtn" class="btn btn-outline-dark ms-3">🌙</button></li>
       </ul>
     </div>
   </div>
@@ -105,25 +105,38 @@
     <div class="tab-pane fade" id="pills-informes">
       <div class="card shadow">
         <div class="card-header bg-success text-white">
-          <h4 class="mb-0"><i class="bi bi-search"></i> Búsqueda de Pacientes</h4>
+          <h4 class="mb-0">🔍 Búsqueda de Pacientes</h4>
         </div>
-        <div class="card-body p-5 text-center">
-          <h5 class="mb-3">Ingrese el nombre del paciente para ver su estatus actual</h5>
-          <div class="input-group input-group-lg mb-4">
-            <input type="text" id="busquedaInforme" class="form-control" placeholder="Ej. Juan Pérez">
-            <button class="btn btn-success" type="button" onclick="buscarInforme()">Buscar</button>
+        <div class="card-body p-4">
+          <h5 class="mb-3 text-center">Seleccione un paciente para ver su información</h5>
+          
+          <!-- Buscador con datalist/combobox -->
+          <div class="row mb-4">
+            <div class="col-md-10 offset-md-1">
+              <div class="input-group">
+                <span class="input-group-text">👤</span>
+                <input type="text" id="busquedaInforme" class="form-control" placeholder="Escriba para buscar o seleccione del listado..." list="listaPacientesDatalist" autocomplete="off">
+                <datalist id="listaPacientesDatalist">
+                  <!-- Se llenará automáticamente con JavaScript -->
+                </datalist>
+                <button class="btn btn-success" type="button" onclick="buscarInforme()">
+                  🔍 Buscar
+                </button>
+                <button class="btn btn-outline-secondary" type="button" onclick="limpiarBusqueda()">
+                  ✕ Limpiar
+                </button>
+              </div>
+              <div class="form-text mt-2">
+                ⓘ Escriba el nombre del paciente o seleccione uno del listado desplegable
+              </div>
+            </div>
           </div>
 
           <!-- Resultado de búsqueda -->
-          <div id="resultadoBusqueda" class="text-start mt-4"></div>
-
-          <!-- Listado de pacientes -->
-          <div class="row mt-4">
-            <div class="col-md-12">
-              <h5>Listado de Pacientes Ingresados</h5>
-              <ul id="listaPacientes" class="list-group">
-                <!-- Se genera automáticamente -->
-              </ul>
+          <div id="resultadoBusqueda" class="mt-4">
+            <div class="text-center text-muted">
+              <div style="font-size: 4rem;">👨‍⚕️</div>
+              <p class="mt-2">Seleccione un paciente para ver su información médica</p>
             </div>
           </div>
 
@@ -168,32 +181,59 @@
 </div>
 
 <script type="module">
+// Importar Firebase
 import { db } from './firebase-config.js';
-import { collection, addDoc, serverTimestamp, query, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { collection, addDoc, serverTimestamp, query, getDocs, where } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-// --- FUNCION REGISTRAR ---
-window.registrarPaciente = async (nivel) => {
-    const nombre = document.getElementById('nombre').value;
+// Variables globales
+let todosPacientes = [];
+
+// --- FUNCION REGISTRAR PACIENTE (FIREBASE) ---
+window.registrarPaciente = async function(nivel) {
+    const nombre = document.getElementById('nombre').value.trim();
     const edad = document.getElementById('edad').value;
     const especialidad = document.getElementById('especialidad').value;
-    const motivo = document.getElementById('motivo').value;
+    const motivo = document.getElementById('motivo').value.trim();
+    
     const vitales = {
         ta: document.getElementById('v_ta').value || '--',
         temp: document.getElementById('v_temp').value || '--',
+        fc: document.getElementById('v_fc').value || '--',
         spo2: document.getElementById('v_spo2').value || '--',
+        glu: document.getElementById('v_glu').value || '--',
         peso: document.getElementById('v_peso').value || '--'
     };
+    
     let signosAlarma = [];
     document.querySelectorAll('.alarma-check:checked').forEach(c => signosAlarma.push(c.value));
-    if(!nombre || !motivo) { alert("Nombre y Motivo obligatorios"); return; }
+    
+    if(!nombre || !motivo) { 
+        alert("Nombre y Motivo son obligatorios"); 
+        return; 
+    }
 
     try {
-        await addDoc(collection(db, "pacientes"), {
-            nombre, edad, especialidad, motivo, vitales, signosAlarma,
-            nivel_prioridad: nivel, estado: "espera",
+        // Crear documento en Firebase
+        const nuevoPaciente = {
+            nombre, 
+            edad: parseInt(edad), 
+            especialidad, 
+            motivo, 
+            vitales, 
+            signosAlarma,
+            nivel_prioridad: nivel, 
+            estado: "espera",
             ubicacion_actual: "Sala de Espera",
-            fecha_ingreso: serverTimestamp()
-        });
+            fecha_ingreso: serverTimestamp(),
+            antecedentes: document.getElementById('antecedentes').value || '',
+            atendido_por: "",
+            hora_atencion: null,
+            observaciones: ""
+        };
+
+        // Guardar en Firebase
+        const docRef = await addDoc(collection(db, "pacientes"), nuevoPaciente);
+        console.log("Paciente registrado con ID: ", docRef.id);
 
         // Llenar impresión
         document.getElementById('print-nombre').innerText = nombre;
@@ -206,112 +246,319 @@ window.registrarPaciente = async (nivel) => {
         document.getElementById('print-motivo').innerText = motivo;
         document.getElementById('print-nivel').innerText = nivel;
 
+        // Imprimir
         window.print();
-        alert("✅ Ingreso Exitoso");
+        
+        // Mostrar mensaje y limpiar formulario
+        alert("✅ Ingreso Exitoso - Paciente registrado en el sistema");
         document.getElementById('triageForm').reset();
         document.querySelectorAll('.alarma-check').forEach(c => c.checked = false);
-        cargarListadoPacientes();
-    } catch(e){ console.error(e); alert("Error"); }
+        
+        // Actualizar datalist
+        await cargarListadoPacientesDatalist();
+        
+    } catch (error) {
+        console.error("Error al registrar paciente: ", error);
+        alert("❌ Error al registrar paciente. Verifica la conexión a internet.");
+    }
 }
 
-// --- FUNCION BUSCAR ---
-window.buscarInforme = async () => {
-    const texto = document.getElementById('busquedaInforme').value.toLowerCase();
+// --- FUNCION BUSCAR PACIENTE (FIREBASE) ---
+window.buscarInforme = async function() {
+    const texto = document.getElementById('busquedaInforme').value.trim().toLowerCase();
     const div = document.getElementById('resultadoBusqueda');
-    div.innerHTML = '<div class="spinner-border text-primary"></div> Buscando...';
+    
+    if(!texto) { 
+        div.innerHTML = '<div class="alert alert-warning">Por favor, ingrese o seleccione un nombre de paciente.</div>';
+        return; 
+    }
 
-    if(!texto) { div.innerHTML = ""; return; }
+    div.innerHTML = '<div class="text-center"><div class="spinner-border text-primary"></div> Buscando pacientes...</div>';
 
-    const q = query(collection(db, "pacientes"));
     try {
+        // Buscar en Firebase
+        const q = query(collection(db, "pacientes"));
         const querySnapshot = await getDocs(q);
-        const encontrados = [];
-        querySnapshot.forEach(doc => { const data = doc.data(); if(data.nombre.toLowerCase().includes(texto)) encontrados.push(data); });
+        
+        const pacientesEncontrados = [];
+        querySnapshot.forEach(doc => {
+            const paciente = { id: doc.id, ...doc.data() };
+            if (paciente.nombre && paciente.nombre.toLowerCase().includes(texto)) {
+                pacientesEncontrados.push(paciente);
+            }
+        });
 
-        div.innerHTML = "";
-        if(encontrados.length === 0) {
-            div.innerHTML = '<div class="alert alert-warning">No se encontró al paciente.</div>';
+        if(pacientesEncontrados.length === 0) {
+            div.innerHTML = '<div class="alert alert-warning">No se encontró al paciente. Verifique el nombre e intente nuevamente.</div>';
             return;
         }
 
-        encontrados.forEach(p => mostrarHistorialPaciente(p));
+        // Mostrar resultados
+        let html = '';
+        
+        pacientesEncontrados.forEach(paciente => {
+            // Determinar color según nivel
+            const borderColor = getBorderColorByNivel(paciente.nivel_prioridad);
+            const bgColor = getBgColorByNivel(paciente.nivel_prioridad);
+            
+            // Determinar icono y texto según estado
+            let icono = "🏥";
+            let textoEstado = paciente.ubicacion_actual || "Sala de Espera";
+            
+            if(paciente.estado === 'espera') { 
+                icono = "⏳"; 
+                textoEstado = "En espera";
+            }
+            if(paciente.ubicacion_actual === 'ALTA') {
+                icono = "✅";
+                textoEstado = "Dado de alta";
+            }
+            if(paciente.ubicacion_actual === 'CIRUGIA') {
+                icono = "🔪";
+                textoEstado = "En cirugía";
+            }
+            if(paciente.ubicacion_actual === 'ATENDIDO') {
+                icono = "👨‍⚕️";
+                textoEstado = "En consulta";
+            }
 
-    } catch (error){ console.error(error); div.innerHTML = "Error al buscar"; }
+            // Formatear fecha
+            let fechaStr = '--';
+            if(paciente.fecha_ingreso && paciente.fecha_ingreso.seconds) {
+                const fecha = new Date(paciente.fecha_ingreso.seconds * 1000);
+                fechaStr = fecha.toLocaleDateString('es-ES', {
+                    day: '2-digit',
+                    month: '2-digit',
+                    year: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+            }
+
+            html += `
+            <div class="card mb-3 shadow-sm" style="border-left: 5px solid ${borderColor}; background-color: ${bgColor};">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <h3 class="card-title">${paciente.nombre}</h3>
+                            <p class="text-muted mb-1">${paciente.edad} años | ${paciente.especialidad}</p>
+                            <p class="mb-1"><strong>Fecha de ingreso:</strong> ${fechaStr}</p>
+                        </div>
+                        <span class="fs-1">${icono}</span>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h5 class="${getTextColorByNivel(paciente.nivel_prioridad)}">${textoEstado}</h5>
+                            <small class="text-muted">Estatus actual</small>
+                            <p class="mt-2"><strong>Nivel de prioridad:</strong> 
+                                <span class="badge ${getBadgeClassByNivel(paciente.nivel_prioridad)}">Nivel ${paciente.nivel_prioridad}</span>
+                            </p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><strong>Motivo de consulta:</strong> ${paciente.motivo}</p>
+                            <div class="bg-light p-2 rounded small">
+                                <strong>Signos vitales:</strong><br>
+                                T/A: ${paciente.vitales?.ta || '--'} | Temp: ${paciente.vitales?.temp || '--'}°C<br>
+                                SpO2: ${paciente.vitales?.spo2 || '--'}% | Peso: ${paciente.vitales?.peso || '--'} kg
+                            </div>
+                        </div>
+                    </div>
+                    ${paciente.signosAlarma && paciente.signosAlarma.length > 0 ? 
+                        `<div class="mt-2">
+                            <strong>Signos de alarma:</strong>
+                            <span class="badge bg-danger ms-1">${paciente.signosAlarma.join('</span> <span class="badge bg-danger ms-1">')}</span>
+                        </div>` : ''}
+                    ${paciente.antecedentes ? 
+                        `<div class="mt-2">
+                            <strong>Antecedentes:</strong>
+                            <p class="mb-0">${paciente.antecedentes}</p>
+                        </div>` : ''}
+                </div>
+            </div>
+            `;
+        });
+
+        div.innerHTML = html;
+        
+    } catch (error) {
+        console.error("Error al buscar pacientes: ", error);
+        div.innerHTML = '<div class="alert alert-danger">Error al buscar pacientes. Verifica la conexión a internet.</div>';
+    }
 }
 
-// --- FUNCION MOSTRAR HISTORIAL ---
-function mostrarHistorialPaciente(p) {
-    const div = document.getElementById('resultadoBusqueda');
-    let claseEstado = `estado-${p.ubicacion_actual}`;
-    let icono = "🏥";
-    if(p.estado === 'espera') { icono="⏳"; p.ubicacion_actual="Sala de Espera (Por atender)"; claseEstado=""; }
-    if(p.ubicacion_actual==='ALTA') icono="✅";
-    if(p.ubicacion_actual==='CIRUGIA') icono="🔪";
+// --- FUNCION CARGAR LISTADO PARA DATALIST (FIREBASE) ---
+async function cargarListadoPacientesDatalist() {
+    const datalist = document.getElementById('listaPacientesDatalist');
+    
+    try {
+        // Cargar pacientes de Firebase
+        const q = query(collection(db, "pacientes"));
+        const querySnapshot = await getDocs(q);
+        
+        // Limpiar datalist
+        datalist.innerHTML = '';
+        
+        // Guardar todos los pacientes
+        todosPacientes = [];
+        const nombresUnicos = new Set();
+        
+        querySnapshot.forEach(doc => {
+            const paciente = { id: doc.id, ...doc.data() };
+            todosPacientes.push(paciente);
+            
+            // Agregar opción al datalist si el nombre no está repetido
+            if(!nombresUnicos.has(paciente.nombre)) {
+                const option = document.createElement('option');
+                option.value = paciente.nombre;
+                option.textContent = `${paciente.nombre} (${paciente.edad} años) - ${paciente.especialidad}`;
+                datalist.appendChild(option);
+                nombresUnicos.add(paciente.nombre);
+            }
+        });
+        
+        // Agregar event listener para cuando se seleccione del datalist
+        document.getElementById('busquedaInforme').addEventListener('input', function(e) {
+            const valorSeleccionado = e.target.value;
+            // Si el valor coincide con una opción del datalist, buscar automáticamente
+            const opciones = Array.from(datalist.options);
+            const existeOpcion = opciones.some(opcion => opcion.value === valorSeleccionado);
+            
+            if(existeOpcion) {
+                // Pequeño retraso para que el usuario vea la selección
+                setTimeout(() => buscarInforme(), 300);
+            }
+        });
+        
+    } catch (error) {
+        console.error("Error al cargar listado de pacientes: ", error);
+        // Fallback a localStorage si Firebase falla
+        cargarListadoLocalStorage();
+    }
+}
 
-    div.innerHTML = `
-    <div class="card mb-3 shadow-sm resultado-informe ${claseEstado}">
-      <div class="card-body">
-        <h3 class="card-title">${p.nombre} (${p.edad} años)</h3>
-        <hr>
-        <div class="row">
-          <div class="col-md-6"><p class="mb-1 text-muted">Estatus Actual:</p><h4 class="fw-bold text-primary">${icono} ${p.ubicacion_actual}</h4></div>
-          <div class="col-md-6"><p class="mb-1 text-muted">Detalles / Habitación:</p><h5 class="fw-bold">${p.detalle_ubicacion||'En espera de asignación'}</h5></div>
+// --- FUNCIÓN DE FALLBACK (localStorage) ---
+function cargarListadoLocalStorage() {
+    const datalist = document.getElementById('listaPacientesDatalist');
+    const pacientesLocal = JSON.parse(localStorage.getItem('pacientes')) || [];
+    
+    datalist.innerHTML = '';
+    const nombresUnicos = new Set();
+    
+    pacientesLocal.forEach(paciente => {
+        if(!nombresUnicos.has(paciente.nombre)) {
+            const option = document.createElement('option');
+            option.value = paciente.nombre;
+            option.textContent = `${paciente.nombre} (${paciente.edad} años) - ${paciente.especialidad}`;
+            datalist.appendChild(option);
+            nombresUnicos.add(paciente.nombre);
+        }
+    });
+}
+
+// --- FUNCION LIMPIAR BÚSQUEDA ---
+window.limpiarBusqueda = function() {
+    document.getElementById('busquedaInforme').value = '';
+    document.getElementById('resultadoBusqueda').innerHTML = `
+        <div class="text-center text-muted">
+            <div style="font-size: 4rem;">👨‍⚕️</div>
+            <p class="mt-2">Seleccione un paciente para ver su información médica</p>
         </div>
-        <div class="mt-3 bg-light p-2 rounded small">
-          <strong>Especialidad:</strong> ${p.especialidad} <br>
-          <strong>Motivo ingreso:</strong> ${p.motivo} <br>
-          <strong>Signos vitales:</strong> T/A: ${p.vitales.ta} | Temp: ${p.vitales.temp} | SpO2: ${p.vitales.spo2} | Peso: ${p.vitales.peso} <br>
-          <strong>Fecha ingreso:</strong> ${p.fecha_ingreso ? new Date(p.fecha_ingreso.seconds*1000).toLocaleString() : '--'}
-        </div>
-      </div>
-    </div>
     `;
 }
 
-// --- FUNCION LISTAR PACIENTES ---
-async function cargarListadoPacientes() {
-    const lista = document.getElementById('listaPacientes');
-    lista.innerHTML = '<li class="list-group-item">Cargando...</li>';
-    try {
-        const q = query(collection(db,"pacientes"));
-        const querySnapshot = await getDocs(q);
-        lista.innerHTML = '';
-        querySnapshot.forEach(doc => {
-            const p = doc.data();
-            const li = document.createElement('li');
-            li.className = 'list-group-item list-group-item-action';
-            li.style.cursor = 'pointer';
-            li.textContent = p.nombre + ' (' + p.edad + ' años)';
-            li.addEventListener('click',()=>mostrarHistorialPaciente(p));
-            lista.appendChild(li);
-        });
-        if(lista.childNodes.length===0) lista.innerHTML='<li class="list-group-item text-muted">No hay pacientes ingresados</li>';
-    } catch(e){ console.error(e); lista.innerHTML='<li class="list-group-item text-danger">Error al cargar pacientes</li>'; }
+// --- FUNCIONES AUXILIARES PARA COLORES ---
+function getBorderColorByNivel(nivel) {
+    switch(parseInt(nivel)) {
+        case 1: return '#dc3545'; // Rojo
+        case 2: return '#fd7e14'; // Naranja
+        case 3: return '#ffc107'; // Amarillo
+        case 4: return '#28a745'; // Verde
+        case 5: return '#007bff'; // Azul
+        default: return '#6c757d'; // Gris
+    }
 }
-cargarListadoPacientes();
+
+function getBgColorByNivel(nivel) {
+    switch(parseInt(nivel)) {
+        case 1: return 'rgba(220, 53, 69, 0.05)'; // Rojo muy claro
+        case 2: return 'rgba(253, 126, 20, 0.05)'; // Naranja muy claro
+        case 3: return 'rgba(255, 193, 7, 0.05)'; // Amarillo muy claro
+        case 4: return 'rgba(40, 167, 69, 0.05)'; // Verde muy claro
+        case 5: return 'rgba(0, 123, 255, 0.05)'; // Azul muy claro
+        default: return 'rgba(108, 117, 125, 0.05)'; // Gris muy claro
+    }
+}
+
+function getTextColorByNivel(nivel) {
+    switch(parseInt(nivel)) {
+        case 1: return 'text-danger';
+        case 2: return 'text-warning';
+        case 3: return 'text-info';
+        case 4: return 'text-success';
+        case 5: return 'text-primary';
+        default: return 'text-secondary';
+    }
+}
+
+function getBadgeClassByNivel(nivel) {
+    switch(parseInt(nivel)) {
+        case 1: return 'bg-danger';
+        case 2: return 'bg-warning text-dark';
+        case 3: return 'bg-info';
+        case 4: return 'bg-success';
+        case 5: return 'bg-primary';
+        default: return 'bg-secondary';
+    }
+}
+
+// --- INICIALIZAR ---
+document.addEventListener('DOMContentLoaded', async function() {
+    // Cargar listado de pacientes
+    await cargarListadoPacientesDatalist();
+    
+    // Event listener para la tecla Enter en el buscador
+    document.getElementById('busquedaInforme').addEventListener('keypress', function(e) {
+        if(e.key === 'Enter') {
+            e.preventDefault();
+            buscarInforme();
+        }
+    });
+});
 </script>
 
+<!-- ============================
+     MODO OSCURO
+============================ -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
 <script>
-// ▸ MODO OSCURO
-const body = document.body;
-const btn = document.getElementById("darkModeBtn");
+  const body = document.body;
+  const btn = document.getElementById("darkModeBtn");
 
-function aplicarModo(modo){
-    if(modo==="dark"){body.classList.add("dark-mode"); body.classList.remove("light-mode"); btn.textContent="🌙";}
-    else{body.classList.add("light-mode"); body.classList.remove("dark-mode"); btn.textContent="☀️";}
-}
+  function aplicarModo(modo){
+      if(modo === "dark"){
+          body.classList.add("dark-mode"); 
+          body.classList.remove("light-mode"); 
+          btn.textContent = "🌙";
+      } else {
+          body.classList.add("light-mode"); 
+          body.classList.remove("dark-mode"); 
+          btn.textContent = "☀️";
+      }
+  }
 
-const modoGuardado = localStorage.getItem("modo") || "light";
-aplicarModo(modoGuardado);
+  const modoGuardado = localStorage.getItem("modo") || "light";
+  aplicarModo(modoGuardado);
 
-btn.addEventListener("click",()=>{
-    const nuevoModo = body.classList.contains("dark-mode")?"light":"dark";
-    localStorage.setItem("modo",nuevoModo);
-    aplicarModo(nuevoModo);
-});
-window.addEventListener("storage",(e)=>{ if(e.key==="modo") aplicarModo(e.newValue); });
+  btn.addEventListener("click", function(){
+      const nuevoModo = body.classList.contains("dark-mode") ? "light" : "dark";
+      localStorage.setItem("modo", nuevoModo);
+      aplicarModo(nuevoModo);
+  });
+
+  window.addEventListener("storage", function(e){ 
+      if(e.key === "modo") aplicarModo(e.newValue); 
+  });
 </script>
 
 </body>

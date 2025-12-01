@@ -70,3 +70,294 @@
 
     /* evitar que alguna regla previa sobreescriba el fondo oscuro: */
     html, body, .container { min-height: 100%; height: 100%; }
+            :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --danger-color: #e74c3c;
+            --success-color: #2ecc71;
+            --warning-color: #f39c12;
+            --info-color: #1abc9c;
+            --light-color: #ecf0f1;
+            --dark-color: #2c3e50;
+            --border-radius: 10px;
+            --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+            transition: var(--transition);
+            min-height: 100vh;
+        }
+
+        /* NAVBAR ESTILIZADA */
+        #mainNav {
+            background: linear-gradient(135deg, var(--primary-color), #34495e) !important;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            padding: 10px 0;
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.3rem;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+        }
+
+        .navbar-brand i {
+            margin-right: 10px;
+            font-size: 1.5rem;
+        }
+
+        .nav-link {
+            font-weight: 500;
+            padding: 8px 16px !important;
+            margin: 0 2px;
+            border-radius: 6px;
+            transition: var(--transition);
+        }
+
+        .nav-link:hover, .nav-link.active {
+            background-color: rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px);
+        }
+
+        /* TARJETAS DE ESTADÍSTICAS */
+        .stat-card {
+            border: none;
+            border-radius: var(--border-radius);
+            transition: var(--transition);
+            overflow: hidden;
+            height: 100%;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-card.bg-primary {
+            background: linear-gradient(135deg, #3498db, #2980b9) !important;
+        }
+
+        .stat-card.bg-danger {
+            background: linear-gradient(135deg, #e74c3c, #c0392b) !important;
+        }
+
+        .stat-card.bg-success {
+            background: linear-gradient(135deg, #2ecc71, #27ae60) !important;
+        }
+
+        .stat-card.bg-info {
+            background: linear-gradient(135deg, #1abc9c, #16a085) !important;
+        }
+
+        .icon-box {
+            font-size: 2.5rem;
+            opacity: 0.8;
+        }
+
+        /* GRÁFICAS */
+        .card {
+            border: none;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            transition: var(--transition);
+            margin-bottom: 1.5rem;
+        }
+
+        .card:hover {
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-header {
+            background-color: white;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            font-weight: 600;
+            color: var(--primary-color);
+            padding: 1rem 1.5rem;
+            border-radius: var(--border-radius) var(--border-radius) 0 0 !important;
+        }
+
+        .card-header i {
+            margin-right: 8px;
+            color: var(--secondary-color);
+        }
+
+        .card-body {
+            padding: 1.5rem;
+        }
+
+        /* CABECERA */
+        .page-header {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--box-shadow);
+        }
+
+        .page-title {
+            color: var(--primary-color);
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .page-subtitle {
+            color: #7f8c8d;
+            font-size: 1rem;
+        }
+
+        /* BOTÓN MODO OSCURO */
+        #darkModeBtn {
+            border-radius: 50px;
+            padding: 8px 16px;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        /* ESTILOS PARA MODO OSCURO */
+        body.dark-mode {
+            background-color: #121212;
+            color: #e0e0e0;
+        }
+
+        .dark-mode .card {
+            background-color: #1e1e1e;
+            color: #e0e0e0;
+        }
+
+        .dark-mode .card-header {
+            background-color: #252525;
+            color: #e0e0e0;
+            border-bottom: 1px solid #333;
+        }
+
+        .dark-mode .page-header {
+            background-color: #1e1e1e;
+            color: #e0e0e0;
+        }
+
+        .dark-mode .page-title {
+            color: #ffffff;
+        }
+
+        .dark-mode .page-subtitle {
+            color: #aaa;
+        }
+
+        .dark-mode .text-primary {
+            color: #4dabf7 !important;
+        }
+
+        .dark-mode .text-muted {
+            color: #aaa !important;
+        }
+
+        .dark-mode #mainNav {
+            background: linear-gradient(135deg, #0d1b2a, #1b263b) !important;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            .stat-card .icon-box {
+                font-size: 2rem;
+            }
+            
+            .stat-card h2 {
+                font-size: 1.8rem;
+            }
+            
+            .navbar-brand {
+                font-size: 1.1rem;
+            }
+        }
+
+        /* ANIMACIONES */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease forwards;
+        }
+
+        /* BADGE PARA SATURACIÓN */
+        .saturacion-badge {
+            font-size: 0.9rem;
+            padding: 4px 10px;
+            border-radius: 20px;
+        }
+
+        .saturacion-bajo { background-color: #d4edda; color: #155724; }
+        .saturacion-medio { background-color: #fff3cd; color: #856404; }
+        .saturacion-alto { background-color: #f8d7da; color: #721c24; }
+        /* Agrega esto en tu archivo css_admin.css o en un estilo interno */
+
+/* Estilos para modo oscuro en la navbar */
+.dark-mode #mainNav {
+    background-color: #212529 !important;
+    border-bottom: 1px solid #495057;
+}
+
+.dark-mode #mainNav .navbar-brand,
+.dark-mode #mainNav .nav-link {
+    color: #e9ecef !important;
+}
+
+.dark-mode #mainNav .nav-link.active {
+    color: #0d6efd !important;
+    font-weight: 600;
+}
+
+.dark-mode #mainNav .nav-link:hover {
+    color: #86b7fe !important;
+}
+
+/* Estilos para modo claro en la navbar */
+.light-mode #mainNav {
+    background-color: #0d6efd !important;
+    border-bottom: 1px solid #0a58ca;
+}
+
+.light-mode #mainNav .navbar-brand,
+.light-mode #mainNav .nav-link {
+    color: #ffffff !important;
+}
+
+.light-mode #mainNav .nav-link.active {
+    color: #ffd43b !important;
+    font-weight: 600;
+}
+
+.light-mode #mainNav .nav-link:hover {
+    color: #cfe2ff !important;
+}
+
+/* Asegurar que el botón de modo oscuro/claro tenga buen contraste */
+#darkModeBtn {
+    transition: all 0.3s ease;
+}
+
+.dark-mode #darkModeBtn {
+    background-color: #495057 !important;
+    border-color: #6c757d !important;
+    color: #f8f9fa !important;
+}
+
+.light-mode #darkModeBtn {
+    background-color: rgba(255, 255, 255, 0.1) !important;
+    border-color: rgba(255, 255, 255, 0.3) !important;
+    color: #ffffff !important;
+}
+
+.dark-mode #darkModeBtn:hover {
+    background-color: #6c757d !important;
+}
+
+.light-mode #darkModeBtn:hover {
+    background-color: rgba(255, 255, 255, 0.2) !important;
+}

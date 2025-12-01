@@ -57,3 +57,267 @@ body {
 /* Scroll oculto */
 #lista-pacientes::-webkit-scrollbar { display: none; }
 #lista-pacientes { -ms-overflow-style: none; scrollbar-width: none; }
+
+   /* ESTILOS BASE */
+    :root {
+        --text-light: #212529;
+        --text-dark: #f8f9fa;
+        --bg-light: #ffffff;
+        --bg-dark: #121212;
+        --card-bg-light: #ffffff;
+        --card-bg-dark: #1e1e1e;
+        --border-light: #dee2e6;
+        --border-dark: #444;
+    }
+    
+    body {
+        transition: background-color 0.3s, color 0.3s;
+    }
+    
+    /* MODO CLARO (por defecto) */
+    body.light-mode {
+        background-color: #f8f9fa;
+        color: var(--text-light);
+    }
+    
+    .light-mode .card {
+        background-color: var(--card-bg-light);
+        color: var(--text-light);
+        border-color: var(--border-light);
+    }
+    
+    .light-mode .text-muted {
+        color: #6c757d !important;
+    }
+    
+    .light-mode .bg-light {
+        background-color: #f8f9fa !important;
+    }
+    
+    .light-mode .bg-opacity-10 {
+        background-color: rgba(var(--bs-primary-rgb), 0.1) !important;
+    }
+    
+    /* MODO OSCURO */
+    body.dark-mode {
+        background-color: var(--bg-dark);
+        color: var(--text-dark);
+    }
+    
+    .dark-mode .card {
+        background-color: var(--card-bg-dark);
+        color: var(--text-dark);
+        border-color: var(--border-dark);
+    }
+    
+    .dark-mode .text-muted {
+        color: #aaa !important;
+    }
+    
+    .dark-mode .text-primary {
+        color: #4dabf7 !important;
+    }
+    
+    .dark-mode .text-danger {
+        color: #ff6b6b !important;
+    }
+    
+    .dark-mode .text-warning {
+        color: #ffd93d !important;
+    }
+    
+    .dark-mode .text-info {
+        color: #6bc5d2 !important;
+    }
+    
+    .dark-mode .text-success {
+        color: #6bcf7f !important;
+    }
+    
+    /* Clases específicas para textos en modo oscuro */
+    .dark-mode .paciente-nombre,
+    .dark-mode .paciente-card,
+    .dark-mode .tiempo-valor,
+    .dark-mode .card-body {
+        color: var(--text-dark) !important;
+    }
+    
+    .dark-mode .paciente-nombre {
+        color: #ffffff !important;
+    }
+    
+    .dark-mode .tiempo-label {
+        color: #aaa !important;
+    }
+    
+    .dark-mode .edad-badge,
+    .dark-mode .especialidad-badge {
+        color: var(--text-dark) !important;
+        background-color: #333 !important;
+        border-color: #555 !important;
+    }
+    
+    .dark-mode .estado-badge {
+        background-color: #ffc107 !important;
+        color: #000 !important;
+    }
+    
+    .dark-mode .bg-light {
+        background-color: #2d2d2d !important;
+    }
+    
+    .dark-mode .bg-opacity-10 {
+        background-color: rgba(77, 171, 247, 0.1) !important;
+    }
+    
+    .dark-mode .alert-info {
+        background-color: rgba(13, 110, 253, 0.2) !important;
+        border-color: rgba(13, 110, 253, 0.3) !important;
+        color: #b3d7ff !important;
+    }
+    
+    .dark-mode .alert-danger {
+        background-color: rgba(220, 53, 69, 0.2) !important;
+        border-color: rgba(220, 53, 69, 0.3) !important;
+        color: #f8b4b8 !important;
+    }
+    
+    .dark-mode .badge.bg-light {
+        background-color: #444 !important;
+        color: #f8f9fa !important;
+    }
+    
+    .dark-mode .badge.bg-secondary {
+        background-color: #555 !important;
+        color: #f8f9fa !important;
+    }
+    
+    .dark-mode .border-primary {
+        border-color: #4dabf7 !important;
+    }
+    
+    .dark-mode .border-danger {
+        border-color: #ff6b6b !important;
+    }
+    
+    .dark-mode .border-warning {
+        border-color: #ffd93d !important;
+    }
+    
+    .dark-mode .border-info {
+        border-color: #6bc5d2 !important;
+    }
+    
+    .dark-mode .border-success {
+        border-color: #6bcf7f !important;
+    }
+    
+    /* ESTILOS GENERALES */
+    .card {
+        border-radius: 10px;
+        transition: all 0.3s ease;
+    }
+    
+    .card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    
+    .dark-mode .card:hover {
+        box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+    }
+    
+    .border-5 {
+        border-width: 5px !important;
+    }
+    
+    /* Número de turno */
+    .numero-turno {
+        width: 50px;
+        height: 50px;
+        font-size: 1.5rem;
+        font-weight: bold;
+    }
+    
+    /* Animación de giro para botón refresh */
+    @keyframes spin {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+    }
+    
+    .spinning {
+        animation: spin 0.5s linear;
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+        h1 {
+            font-size: 1.5rem;
+        }
+        
+        .card-body {
+            padding: 1rem !important;
+        }
+        
+        .border-5 {
+            border-width: 3px !important;
+        }
+        
+        .col-md-1.d-none.d-md-flex {
+            display: none !important;
+        }
+        
+        .col-md-5, .col-md-3, .col-md-2, .col-md-1 {
+            margin-bottom: 10px;
+        }
+        
+        .col-md-5 {
+            order: 1;
+        }
+        
+        .col-md-3 {
+            order: 2;
+        }
+        
+        .col-md-2 {
+            order: 3;
+        }
+        
+        .col-md-1 {
+            order: 4;
+        }
+        
+        .numero-turno {
+            width: 40px;
+            height: 40px;
+            font-size: 1.2rem;
+        }
+    }
+    
+    /* Navbar en modo oscuro */
+    .dark-mode .navbar-light {
+        background-color: #1a1a1a !important;
+        border-bottom: 1px solid #333;
+    }
+    
+    .dark-mode .navbar-light .navbar-nav .nav-link {
+        color: #e0e0e0 !important;
+    }
+    
+    .dark-mode .navbar-light .navbar-nav .nav-link.active {
+        color: #4dabf7 !important;
+    }
+    
+    .dark-mode .navbar-light .navbar-brand {
+        color: #ffffff !important;
+    }
+    
+    .dark-mode .btn-outline-dark {
+        color: #e0e0e0;
+        border-color: #555;
+    }
+    
+    .dark-mode .btn-outline-dark:hover {
+        background-color: #333;
+        color: #ffffff;
+    }
