@@ -27,18 +27,22 @@
   </div>
 </nav>
 <!-- ███ FIN DEL MENÚ ███ -->
-
 <div class="container mt-4 mb-5 no-print">
 
   <!-- PESTAÑAS -->
-  <ul class="nav nav-pills mb-3 justify-content-center" id="pills-tab" role="tablist">
+  <ul class="nav nav-pills mb-3 justify-content-end" id="pills-tab" role="tablist">
     <li class="nav-item">
-      <button class="nav-link active" id="pills-ingreso-tab" data-bs-toggle="pill" data-bs-target="#pills-ingreso" type="button">📝 Nuevo Ingreso</button>
+      <button class="nav-link active" id="pills-ingreso-tab" data-bs-toggle="pill" data-bs-target="#pills-ingreso" type="button">
+        📝 Nuevo Ingreso
+      </button>
     </li>
     <li class="nav-item">
-      <button class="nav-link" id="pills-informes-tab" data-bs-toggle="pill" data-bs-target="#pills-informes" type="button">🔍 Informes Familiares</button>
+      <button class="nav-link" id="pills-informes-tab" data-bs-toggle="pill" data-bs-target="#pills-informes" type="button">
+        🔍 Informes Familiares
+      </button>
     </li>
   </ul>
+
 
   <div class="tab-content" id="pills-tabContent">
 
@@ -180,13 +184,88 @@
   </div>
 </div>
 
+<!-- MODAL PARA ACTUALIZAR ESTADO -->
+<div class="modal fade" id="modalActualizarEstado" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header bg-warning text-white">
+        <h5 class="modal-title">Actualizar Estado del Paciente</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="pacienteIdActualizar">
+        
+        <div class="mb-3">
+          <h6>Paciente: <span id="nombrePacienteActualizar" class="fw-bold"></span></h6>
+          <p class="text-muted">Estado actual: <span id="estadoActualPaciente" class="badge bg-secondary"></span></p>
+        </div>
+        
+        <div class="mb-3">
+          <label class="form-label fw-bold">Nuevo Estado:</label>
+          <select id="nuevoEstadoSelect" class="form-select">
+            <option value="Sala de Espera">Sala de Espera</option>
+            <option value="ATENDIDO">En consulta médica</option>
+            <option value="OBSERVACION">En observación</option>
+            <option value="CIRUGIA">En cirugía</option>
+            <option value="HOSPITALIZACION">Hospitalizado</option>
+            <option value="TERAPIA_INTENSIVA">Terapia intensiva</option>
+            <option value="ALTA">Alta médica</option>
+            <option value="TRASLADO">Traslado a otro hospital</option>
+          </select>
+        </div>
+        
+        <div class="mb-3">
+          <label class="form-label fw-bold">Ubicación específica:</label>
+          <input type="text" id="ubicacionEspecifica" class="form-control" placeholder="Ej: Habitación 304, Cama 2...">
+        </div>
+        
+        <div class="mb-3">
+          <label class="form-label fw-bold">Observaciones:</label>
+          <textarea id="observacionesEstado" class="form-control" rows="3" placeholder="Información adicional sobre el cambio de estado..."></textarea>
+        </div>
+        
+        <div class="mb-3">
+          <label class="form-label fw-bold">Responsable del cambio:</label>
+          <input type="text" id="responsableCambio" class="form-control" placeholder="Nombre de quien actualiza">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-warning" onclick="guardarCambioEstado()">Guardar Cambios</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================
+     CONFIGURACIÓN DE IMPORTACIONES
+============================ -->
+<script type="importmap">
+  {
+    "imports": {
+      "firebase/app": "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js",
+      "firebase/firestore": "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js"
+    }
+  }
+</script>
+
 <script type="module">
-// Importar Firebase
+// Importar Firebase usando el import map
 import { db } from './firebase-config.js';
-import { collection, addDoc, serverTimestamp, query, getDocs, where } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { 
+  collection, 
+  addDoc, 
+  serverTimestamp, 
+  query, 
+  getDocs, 
+  where, 
+  updateDoc,
+  doc 
+} from "firebase/firestore";
 
 // Variables globales
 let todosPacientes = [];
+let pacienteActualModal = null;
 
 // --- FUNCION REGISTRAR PACIENTE (FIREBASE) ---
 window.registrarPaciente = async function(nivel) {
@@ -304,22 +383,42 @@ window.buscarInforme = async function() {
             // Determinar icono y texto según estado
             let icono = "🏥";
             let textoEstado = paciente.ubicacion_actual || "Sala de Espera";
+            let estadoClase = "bg-secondary";
             
             if(paciente.estado === 'espera') { 
                 icono = "⏳"; 
                 textoEstado = "En espera";
+                estadoClase = "bg-warning";
             }
             if(paciente.ubicacion_actual === 'ALTA') {
                 icono = "✅";
                 textoEstado = "Dado de alta";
+                estadoClase = "bg-success";
             }
             if(paciente.ubicacion_actual === 'CIRUGIA') {
                 icono = "🔪";
                 textoEstado = "En cirugía";
+                estadoClase = "bg-danger";
             }
-            if(paciente.ubicacion_actual === 'ATENDIDO') {
+            if(paciente.ubicacion_actual === 'ATENDIDO' || paciente.ubicacion_actual === 'CONSULTA') {
                 icono = "👨‍⚕️";
                 textoEstado = "En consulta";
+                estadoClase = "bg-primary";
+            }
+            if(paciente.ubicacion_actual === 'HOSPITALIZACION') {
+                icono = "🏨";
+                textoEstado = "Hospitalizado";
+                estadoClase = "bg-info";
+            }
+            if(paciente.ubicacion_actual === 'OBSERVACION') {
+                icono = "👁️";
+                textoEstado = "En observación";
+                estadoClase = "bg-info";
+            }
+            if(paciente.ubicacion_actual === 'TERAPIA_INTENSIVA') {
+                icono = "💊";
+                textoEstado = "Terapia intensiva";
+                estadoClase = "bg-danger";
             }
 
             // Formatear fecha
@@ -333,6 +432,40 @@ window.buscarInforme = async function() {
                     hour: '2-digit',
                     minute: '2-digit'
                 });
+            }
+
+            // Determinar si mostrar botones de actualización
+            // Solo mostrar si NO está dado de alta
+            const mostrarBotones = paciente.ubicacion_actual !== 'ALTA';
+            
+            // Botones de actualización de estado (solo si no está dado de alta)
+            let botonesActualizacion = '';
+            if (mostrarBotones) {
+                botonesActualizacion = `
+                <div class="mt-3 pt-3 border-top">
+                  <h6 class="fw-bold mb-2">Actualizar Estado:</h6>
+                  <div class="d-flex flex-wrap gap-2">
+                    <button class="btn btn-sm btn-outline-primary" onclick="cambiarEstadoRapido('${paciente.id}', 'ATENDIDO', 'En consulta')">
+                      👨‍⚕️ En consulta
+                    </button>
+                    <button class="btn btn-sm btn-outline-warning" onclick="cambiarEstadoRapido('${paciente.id}', 'OBSERVACION', 'Observación')">
+                      👁️ Observación
+                    </button>
+                    <button class="btn btn-sm btn-outline-danger" onclick="cambiarEstadoRapido('${paciente.id}', 'CIRUGIA', 'Cirugía')">
+                      🔪 Cirugía
+                    </button>
+                    <button class="btn btn-sm btn-outline-info" onclick="cambiarEstadoRapido('${paciente.id}', 'HOSPITALIZACION', 'Hospitalización')">
+                      🏨 Hospitalizar
+                    </button>
+                    <button class="btn btn-sm btn-outline-success" onclick="cambiarEstadoRapido('${paciente.id}', 'ALTA', 'Alta médica')">
+                      ✅ Dar de alta
+                    </button>
+                    <button class="btn btn-sm btn-outline-secondary" onclick="abrirModalActualizacion('${paciente.id}', '${paciente.nombre}', '${paciente.ubicacion_actual}')">
+                      ⚙️ Más opciones...
+                    </button>
+                  </div>
+                </div>
+                `;
             }
 
             html += `
@@ -349,7 +482,7 @@ window.buscarInforme = async function() {
                     <hr>
                     <div class="row">
                         <div class="col-md-6">
-                            <h5 class="${getTextColorByNivel(paciente.nivel_prioridad)}">${textoEstado}</h5>
+                            <h5><span class="badge ${estadoClase}">${textoEstado}</span></h5>
                             <small class="text-muted">Estatus actual</small>
                             <p class="mt-2"><strong>Nivel de prioridad:</strong> 
                                 <span class="badge ${getBadgeClassByNivel(paciente.nivel_prioridad)}">Nivel ${paciente.nivel_prioridad}</span>
@@ -374,6 +507,34 @@ window.buscarInforme = async function() {
                             <strong>Antecedentes:</strong>
                             <p class="mb-0">${paciente.antecedentes}</p>
                         </div>` : ''}
+                    
+                    ${paciente.diagnostico_principal ? 
+                        `<div class="mt-2">
+                            <strong>Diagnóstico:</strong>
+                            <p class="mb-0">${paciente.diagnostico_principal}</p>
+                        </div>` : ''}
+                    
+                    ${paciente.tratamiento_prescrito ? 
+                        `<div class="mt-2">
+                            <strong>Tratamiento:</strong>
+                            <p class="mb-0">${paciente.tratamiento_prescrito}</p>
+                        </div>` : ''}
+                    
+                    ${paciente.observaciones ? 
+                        `<div class="mt-2">
+                            <strong>Observaciones:</strong>
+                            <p class="mb-0">${paciente.observaciones}</p>
+                        </div>` : ''}
+                    
+                    ${paciente.atendido_por ? 
+                        `<div class="mt-2">
+                            <strong>Atendido por:</strong>
+                            <p class="mb-0">${paciente.atendido_por}</p>
+                        </div>` : ''}
+                    
+                    <!-- BOTONES DE ACTUALIZACIÓN -->
+                    ${botonesActualizacion}
+                    
                 </div>
             </div>
             `;
@@ -384,6 +545,119 @@ window.buscarInforme = async function() {
     } catch (error) {
         console.error("Error al buscar pacientes: ", error);
         div.innerHTML = '<div class="alert alert-danger">Error al buscar pacientes. Verifica la conexión a internet.</div>';
+    }
+}
+
+// --- FUNCIÓN PARA CAMBIO RÁPIDO DE ESTADO ---
+window.cambiarEstadoRapido = async function(idPaciente, nuevoEstado, textoEstado) {
+    if (!confirm(`¿Cambiar estado del paciente a "${textoEstado}"?`)) {
+        return;
+    }
+    
+    try {
+        await updateDoc(doc(db, "pacientes", idPaciente), {
+            ubicacion_actual: nuevoEstado,
+            estado: nuevoEstado === 'ALTA' ? 'completado' : 'proceso',
+            fecha_ultima_actualizacion: serverTimestamp()
+        });
+        
+        alert(`✅ Estado actualizado a "${textoEstado}"`);
+        // Refrescar la búsqueda
+        buscarInforme();
+        
+    } catch (error) {
+        console.error("Error al cambiar estado:", error);
+        alert("❌ Error al actualizar el estado");
+    }
+}
+
+// --- FUNCIÓN PARA ABRIR MODAL DE ACTUALIZACIÓN DETALLADA ---
+window.abrirModalActualizacion = function(idPaciente, nombrePaciente, estadoActual) {
+    pacienteActualModal = { id: idPaciente, nombre: nombrePaciente, estadoActual: estadoActual };
+    
+    document.getElementById('pacienteIdActualizar').value = idPaciente;
+    document.getElementById('nombrePacienteActualizar').textContent = nombrePaciente;
+    document.getElementById('estadoActualPaciente').textContent = estadoActual || 'No definido';
+    
+    // Pre-seleccionar estado actual si existe
+    const select = document.getElementById('nuevoEstadoSelect');
+    if (estadoActual) {
+        for (let i = 0; i < select.options.length; i++) {
+            if (select.options[i].value === estadoActual) {
+                select.selectedIndex = i;
+                break;
+            }
+        }
+    }
+    
+    // Limpiar otros campos
+    document.getElementById('ubicacionEspecifica').value = '';
+    document.getElementById('observacionesEstado').value = '';
+    document.getElementById('responsableCambio').value = '';
+    
+    // Mostrar modal
+    const modal = new bootstrap.Modal(document.getElementById('modalActualizarEstado'));
+    modal.show();
+}
+
+// --- FUNCIÓN PARA GUARDAR CAMBIO DE ESTADO DESDE MODAL ---
+window.guardarCambioEstado = async function() {
+    const idPaciente = document.getElementById('pacienteIdActualizar').value;
+    const nuevoEstado = document.getElementById('nuevoEstadoSelect').value;
+    const ubicacionEspecifica = document.getElementById('ubicacionEspecifica').value;
+    const observaciones = document.getElementById('observacionesEstado').value;
+    const responsable = document.getElementById('responsableCambio').value;
+    
+    if (!idPaciente || !nuevoEstado) {
+        alert("Por favor complete al menos el nuevo estado");
+        return;
+    }
+    
+    try {
+        // Determinar estado interno
+        let estadoInterno = 'proceso';
+        if (nuevoEstado === 'ALTA') {
+            estadoInterno = 'completado';
+        }
+        
+        const datosActualizacion = {
+            ubicacion_actual: nuevoEstado,
+            estado: estadoInterno,
+            fecha_ultima_actualizacion: serverTimestamp()
+        };
+        
+        // Agregar campos opcionales si tienen valor
+        if (ubicacionEspecifica.trim()) {
+            datosActualizacion.ubicacion_especifica = ubicacionEspecifica;
+        }
+        
+        if (observaciones.trim()) {
+            datosActualizacion.observaciones = observaciones;
+        }
+        
+        if (responsable.trim()) {
+            datosActualizacion.atendido_por = responsable;
+        }
+        
+        // Si es alta, agregar fecha de alta
+        if (nuevoEstado === 'ALTA') {
+            datosActualizacion.fecha_alta = serverTimestamp();
+        }
+        
+        await updateDoc(doc(db, "pacientes", idPaciente), datosActualizacion);
+        
+        // Cerrar modal
+        const modal = bootstrap.Modal.getInstance(document.getElementById('modalActualizarEstado'));
+        modal.hide();
+        
+        alert(`✅ Estado actualizado correctamente a: ${nuevoEstado}`);
+        
+        // Refrescar la búsqueda
+        buscarInforme();
+        
+    } catch (error) {
+        console.error("Error al guardar cambio de estado:", error);
+        alert("❌ Error al guardar los cambios");
     }
 }
 

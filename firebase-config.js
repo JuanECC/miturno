@@ -1,21 +1,27 @@
-// Importamos las funciones necesarias de Firebase desde la web
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getFirestore } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+// Import the functions you need from the SDKs you need
+import { initializeApp } from "firebase/app";
+import { getFirestore } from "firebase/firestore";
+// import { getAnalytics } from "firebase/analytics"; // Opcional, solo si usas analytics
 
-// TU CONFIGURACIÓN (Copia esto desde la consola de Firebase)
-// Se verá algo como apiKey: "AIzaSy...", authDomain: "...", etc.
+// Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyCH-wO7qPYJwnlbh-bg6G7J6e1CXbGceOc",
-  authDomain: "hospital-triage-demo.firebaseapp.com",
-  projectId: "hospital-triage-demo",
-  storageBucket: "hospital-triage-demo.firebasestorage.app",
-  messagingSenderId: "676416385500",
-  appId: "1:676416385500:web:564a1a20e4ce06ab0d5f19"
+  apiKey: "AIzaSyC-R4RFghslHzXPao_Nh2jVjZxDjJh0FuM",
+  authDomain: "hospital-triage-demo-a290f.firebaseapp.com",
+  projectId: "hospital-triage-demo-a290f",
+  storageBucket: "hospital-triage-demo-a290f.firebasestorage.app",
+  messagingSenderId: "889182147534",
+  appId: "1:889182147534:web:549955eb7c42838043119f",
+  measurementId: "G-XBCG94D613"
 };
 
-// Inicializar Firebase
+// Initialize Firebase
 const app = initializeApp(firebaseConfig);
+
+// Inicializar Firestore (la base de datos)
 const db = getFirestore(app);
 
-// Exportamos la base de datos para usarla en los otros archivos
+// Opcional: Inicializar Analytics (solo si lo necesitas)
+// const analytics = getAnalytics(app);
+
+// Exportamos la base de datos para usarla en todos los archivos
 export { db };
