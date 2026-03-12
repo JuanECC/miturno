@@ -265,3 +265,27 @@ input::-webkit-calendar-picker-indicator {
     }
 }
 
+/* Agrega esto a tu css_recepcion.css */
+.cama-card {
+    transition: transform 0.2s;
+    border: 2px solid transparent;
+}
+
+.cama-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.cama-card.disponible {
+    border-color: #28a745;
+}
+
+.cama-card.ocupada {
+    border-color: #dc3545;
+    opacity: 0.8;
+}
+
+.cama-card.seleccionada {
+    border-color: #007bff;
+    background-color: rgba(0,123,255,0.1);
+}
