@@ -240,6 +240,7 @@
 <!-- ============================
      CONFIGURACIÓN DE IMPORTACIONES
 ============================ -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script type="importmap">
   {
     "imports": {
@@ -329,7 +330,15 @@ window.registrarPaciente = async function(nivel) {
         window.print();
         
         // Mostrar mensaje y limpiar formulario
-        alert("✅ Ingreso Exitoso - Paciente registrado en el sistema");
+        Swal.fire({
+    icon: 'success',
+    title: 'Ingreso Exitoso',
+    text: 'Paciente registrado en el sistema',
+    confirmButtonText: 'OK'
+});
+
+document.getElementById('triageForm').reset();
+document.querySelectorAll('.alarma-check').forEach(c => c.checked = false);
         document.getElementById('triageForm').reset();
         document.querySelectorAll('.alarma-check').forEach(c => c.checked = false);
         
