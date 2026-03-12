@@ -5,7 +5,71 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Recepción e Informes</title>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <link rel="stylesheet" href="./rsc/css_recepcion.css">
+<style>
+.cama-card {
+    transition: transform 0.2s, box-shadow 0.2s;
+    border: 2px solid transparent;
+    cursor: pointer;
+    height: 100%;
+}
+
+.cama-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.cama-card.disponible {
+    border-color: #28a745;
+    background-color: rgba(40, 167, 69, 0.05);
+}
+
+.cama-card.ocupada {
+    border-color: #dc3545;
+    opacity: 0.8;
+    background-color: rgba(220, 53, 69, 0.05);
+    cursor: not-allowed;
+}
+
+.cama-card.mantenimiento {
+    border-color: #ffc107;
+    background-color: rgba(255, 193, 7, 0.05);
+    cursor: not-allowed;
+}
+
+.cama-card.seleccionada {
+    border-color: #007bff;
+    background-color: rgba(0, 123, 255, 0.1);
+    transform: scale(1.02);
+}
+
+.area-badge {
+    font-size: 0.8rem;
+    padding: 0.3rem 0.5rem;
+}
+
+.camas-stats {
+    font-size: 0.9rem;
+}
+
+.btn-asignar-cama {
+    transition: all 0.2s;
+}
+
+.btn-asignar-cama:hover {
+    transform: scale(1.05);
+}
+
+.liberar-cama-btn {
+    transition: all 0.2s;
+}
+
+.liberar-cama-btn:hover {
+    background-color: #ffc107;
+    color: #000 !important;
+}
+</style>
 </head>
 <body>
 
@@ -27,6 +91,7 @@
   </div>
 </nav>
 <!-- ███ FIN DEL MENÚ ███ -->
+
 <div class="container mt-4 mb-5 no-print">
 
   <!-- PESTAÑAS -->
@@ -42,7 +107,6 @@
       </button>
     </li>
   </ul>
-
 
   <div class="tab-content" id="pills-tabContent">
 
@@ -144,6 +208,87 @@
             </div>
           </div>
 
+          <!-- SISTEMA DE CAMAS - NUEVO -->
+          <div class="row mt-4" id="sistema-camas" style="display: none;">
+            <div class="col-12">
+              <div class="card border-primary">
+                <div class="card-header bg-primary text-white">
+                  <h5 class="mb-0">
+                    <i class="fas fa-procedures me-2"></i>
+                    Sistema de Camas - Área: <span id="area-seleccionada">Seleccione área</span>
+                  </h5>
+                </div>
+                <div class="card-body">
+                  <!-- Selector de Área -->
+                  <div class="row mb-4">
+                    <div class="col-md-5">
+                      <label class="fw-bold mb-2">Seleccionar Área Hospitalaria:</label>
+                      <div class="input-group">
+                        <span class="input-group-text"><i class="fas fa-map-marker-alt"></i></span>
+                        <select id="selector-area" class="form-select">
+                          <option value="">-- Seleccionar Área --</option>
+                          <option value="QUIROFANO">🔪 Quirófanos</option>
+                          <option value="UCI">💊 UCI (Cuidados Intensivos)</option>
+                          <option value="HOSPITALIZACION">🏨 Hospitalización</option>
+                          <option value="REHABILITACION">💪 Rehabilitación</option>
+                          <option value="OBSERVACION">👁️ Observación</option>
+                          <option value="URGENCIAS">🚑 Urgencias</option>
+                          <option value="PEDIATRIA">👶 Pediatría</option>
+                          <option value="MATERNIDAD">🤱 Maternidad</option>
+                        </select>
+                        <button class="btn btn-primary" onclick="cargarCamasPorArea()">
+                          <i class="fas fa-search"></i> Ver Camas
+                        </button>
+                      </div>
+                    </div>
+                    <div class="col-md-7">
+                      <div class="d-flex justify-content-end gap-3 mt-4">
+                        <div class="text-center">
+                          <span class="badge bg-success p-3" id="camas-disponibles">0 disponibles</span>
+                        </div>
+                        <div class="text-center">
+                          <span class="badge bg-danger p-3" id="camas-ocupadas">0 ocupadas</span>
+                        </div>
+                        <div class="text-center">
+                          <span class="badge bg-info p-3" id="camas-totales">0 totales</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Leyenda -->
+                  <div class="row mb-3">
+                    <div class="col-12">
+                      <div class="d-flex gap-3 justify-content-center">
+                        <span><i class="fas fa-square text-success"></i> Disponible</span>
+                        <span><i class="fas fa-square text-danger"></i> Ocupada</span>
+                        <span><i class="fas fa-square text-warning"></i> Mantenimiento</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Grid de Camas -->
+                  <div id="grid-camas" class="row g-3">
+                    <!-- Se llenará dinámicamente -->
+                    <div class="text-center py-5">
+                      <i class="fas fa-hospital fa-3x text-muted mb-3"></i>
+                      <p class="text-muted">Seleccione un área para ver las camas disponibles</p>
+                    </div>
+                  </div>
+
+                  <!-- Información del paciente seleccionado -->
+                  <div id="info-paciente-seleccionado" class="alert alert-info mt-3" style="display: none;">
+                    <i class="fas fa-info-circle me-2"></i>
+                    <strong>Paciente seleccionado:</strong> <span id="nombre-paciente-cama"></span>
+                    <button class="btn btn-sm btn-success float-end" onclick="asignarCamaPaciente()">
+                      <i class="fas fa-check-circle me-1"></i> Confirmar Asignación
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
         </div>
       </div>
     </div>
@@ -240,6 +385,8 @@
 <!-- ============================
      CONFIGURACIÓN DE IMPORTACIONES
 ============================ -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script type="importmap">
   {
     "imports": {
@@ -258,14 +405,18 @@ import {
   serverTimestamp, 
   query, 
   getDocs, 
+  getDoc,
   where, 
   updateDoc,
-  doc 
+  doc,
+  onSnapshot
 } from "firebase/firestore";
 
 // Variables globales
 let todosPacientes = [];
 let pacienteActualModal = null;
+let pacienteParaCama = null;
+let camasActuales = [];
 
 // --- FUNCION REGISTRAR PACIENTE (FIREBASE) ---
 window.registrarPaciente = async function(nivel) {
@@ -292,7 +443,7 @@ window.registrarPaciente = async function(nivel) {
     }
 
     try {
-        // Crear documento en Firebase
+        // Crear documento en Firebase con campos para camas
         const nuevoPaciente = {
             nombre, 
             edad: parseInt(edad), 
@@ -302,12 +453,15 @@ window.registrarPaciente = async function(nivel) {
             signosAlarma,
             nivel_prioridad: nivel, 
             estado: "espera",
-            ubicacion_actual: "Sala de Espera",
+            ubicacion_actual: "En Sala de espera",
+            cama_asignada: null,
+            area_actual: null,
             fecha_ingreso: serverTimestamp(),
             antecedentes: document.getElementById('antecedentes').value || '',
             atendido_por: "",
             hora_atencion: null,
-            observaciones: ""
+            observaciones: "",
+            historial_ubicaciones: []
         };
 
         // Guardar en Firebase
@@ -329,7 +483,13 @@ window.registrarPaciente = async function(nivel) {
         window.print();
         
         // Mostrar mensaje y limpiar formulario
-        alert("✅ Ingreso Exitoso - Paciente registrado en el sistema");
+        Swal.fire({
+            icon: 'success',
+            title: 'Ingreso Exitoso',
+            text: 'Paciente registrado en el sistema',
+            confirmButtonText: 'OK'
+        });
+
         document.getElementById('triageForm').reset();
         document.querySelectorAll('.alarma-check').forEach(c => c.checked = false);
         
@@ -382,7 +542,7 @@ window.buscarInforme = async function() {
             
             // Determinar icono y texto según estado
             let icono = "🏥";
-            let textoEstado = paciente.ubicacion_actual || "Sala de Espera";
+            let textoEstado = paciente.ubicacion_actual || "En Sala de espera";
             let estadoClase = "bg-secondary";
             
             if(paciente.estado === 'espera') { 
@@ -434,11 +594,30 @@ window.buscarInforme = async function() {
                 });
             }
 
-            // Determinar si mostrar botones de actualización
-            // Solo mostrar si NO está dado de alta
-            const mostrarBotones = paciente.ubicacion_actual !== 'ALTA';
-            
+            // Información de cama si tiene asignada
+            let infoCama = '';
+            if (paciente.cama_asignada) {
+                infoCama = `<div class="mt-2"><span class="badge bg-info">🛏️ Cama asignada: ${paciente.cama_asignada}</span></div>`;
+            }
+
+            // Botón para asignar cama (solo si no tiene cama y no está de alta)
+            let botonAsignarCama = '';
+            if (!paciente.cama_asignada && paciente.ubicacion_actual !== 'ALTA') {
+                botonAsignarCama = `
+                    <button class="btn btn-sm btn-info mt-2" onclick="mostrarSistemaCamas('${paciente.id}', '${paciente.nombre}')">
+                        <i class="fas fa-procedures me-1"></i> Asignar Cama
+                    </button>
+                `;
+            } else if (paciente.cama_asignada && paciente.ubicacion_actual !== 'ALTA') {
+                botonAsignarCama = `
+                    <button class="btn btn-sm btn-warning mt-2" onclick="liberarCamaPorPaciente('${paciente.id}', '${paciente.cama_asignada}')">
+                        <i class="fas fa-unlock-alt me-1"></i> Liberar Cama
+                    </button>
+                `;
+            }
+
             // Botones de actualización de estado (solo si no está dado de alta)
+            const mostrarBotones = paciente.ubicacion_actual !== 'ALTA';
             let botonesActualizacion = '';
             if (mostrarBotones) {
                 botonesActualizacion = `
@@ -476,8 +655,12 @@ window.buscarInforme = async function() {
                             <h3 class="card-title">${paciente.nombre}</h3>
                             <p class="text-muted mb-1">${paciente.edad} años | ${paciente.especialidad}</p>
                             <p class="mb-1"><strong>Fecha de ingreso:</strong> ${fechaStr}</p>
+                            ${infoCama}
                         </div>
-                        <span class="fs-1">${icono}</span>
+                        <div class="text-end">
+                            <span class="fs-1 d-block">${icono}</span>
+                            ${botonAsignarCama}
+                        </div>
                     </div>
                     <hr>
                     <div class="row">
@@ -548,22 +731,512 @@ window.buscarInforme = async function() {
     }
 }
 
-// --- FUNCIÓN PARA CAMBIO RÁPIDO DE ESTADO ---
+// --- FUNCIONES PARA EL SISTEMA DE CAMAS ---
+
+// Mostrar sistema de camas para un paciente
+window.mostrarSistemaCamas = function(idPaciente, nombrePaciente) {
+    pacienteParaCama = { id: idPaciente, nombre: nombrePaciente };
+    document.getElementById('sistema-camas').style.display = 'block';
+    document.getElementById('nombre-paciente-cama').textContent = nombrePaciente;
+    document.getElementById('info-paciente-seleccionado').style.display = 'block';
+    
+    // Scroll hacia el sistema de camas
+    document.getElementById('sistema-camas').scrollIntoView({ behavior: 'smooth' });
+}
+
+// Liberar cama directamente desde el paciente
+window.liberarCamaPorPaciente = async function(idPaciente, nombreCama) {
+    Swal.fire({
+        title: '¿Liberar cama?',
+        text: `La cama ${nombreCama} será liberada`,
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#28a745',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Sí, liberar',
+        cancelButtonText: 'Cancelar'
+    }).then(async (result) => {
+        if (result.isConfirmed) {
+            try {
+                // Buscar la cama por el nombre
+                const camasQuery = query(collection(db, "camas"), where("nombre", "==", nombreCama));
+                const camasSnapshot = await getDocs(camasQuery);
+                
+                if (!camasSnapshot.empty) {
+                    const camaDoc = camasSnapshot.docs[0];
+                    await updateDoc(doc(db, "camas", camaDoc.id), {
+                        estado: 'DISPONIBLE',
+                        paciente_actual: null,
+                        ultima_actualizacion: serverTimestamp()
+                    });
+                }
+                
+                // Actualizar paciente
+                await updateDoc(doc(db, "pacientes", idPaciente), {
+                    cama_asignada: null,
+                    area_actual: null
+                });
+                
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Cama liberada',
+                    text: 'La cama ha sido liberada correctamente',
+                    timer: 1500
+                });
+                
+                // Refrescar búsqueda
+                buscarInforme();
+                
+            } catch (error) {
+                console.error("Error al liberar cama:", error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'No se pudo liberar la cama'
+                });
+            }
+        }
+    });
+}
+
+// Cargar camas por área
+window.cargarCamasPorArea = async function() {
+    const area = document.getElementById('selector-area').value;
+    if (!area) {
+        Swal.fire({
+            icon: 'warning',
+            title: 'Seleccione área',
+            text: 'Por favor seleccione un área hospitalaria'
+        });
+        return;
+    }
+    
+    document.getElementById('area-seleccionada').textContent = 
+        document.getElementById('selector-area').options[document.getElementById('selector-area').selectedIndex].text;
+    
+    try {
+        // Consultar camas en Firebase
+        const q = query(collection(db, "camas"), where("area", "==", area));
+        const querySnapshot = await getDocs(q);
+        
+        let camas = [];
+        querySnapshot.forEach(doc => {
+            camas.push({ id: doc.id, ...doc.data() });
+        });
+        
+        // Si no hay camas, crear algunas de ejemplo
+        if (camas.length === 0) {
+            camas = await crearCamasEjemplo(area);
+        }
+        
+        camasActuales = camas;
+        mostrarGridCamas(camas);
+        
+        // Actualizar contadores
+        const disponibles = camas.filter(c => c.estado === 'DISPONIBLE').length;
+        const ocupadas = camas.filter(c => c.estado === 'OCUPADA').length;
+        const total = camas.length;
+        
+        document.getElementById('camas-disponibles').textContent = `${disponibles} disponibles`;
+        document.getElementById('camas-ocupadas').textContent = `${ocupadas} ocupadas`;
+        document.getElementById('camas-totales').textContent = `${total} totales`;
+        
+    } catch (error) {
+        console.error("Error al cargar camas:", error);
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'No se pudieron cargar las camas'
+        });
+    }
+}
+
+// Crear camas de ejemplo
+async function crearCamasEjemplo(area) {
+    const camasEjemplo = [];
+    const numCamas = getNumCamasPorArea(area);
+    
+    for (let i = 1; i <= numCamas; i++) {
+        const estado = i % 4 === 0 ? 'OCUPADA' : i % 7 === 0 ? 'MANTENIMIENTO' : 'DISPONIBLE';
+        const cama = {
+            id_cama: `${area.toLowerCase()}_${i.toString().padStart(3, '0')}`,
+            nombre: `${getNombreArea(area)} - ${i}`,
+            tipo: area,
+            area: area,
+            estado: estado,
+            paciente_actual: estado === 'OCUPADA' ? 'paciente_ejemplo' : null,
+            ultima_actualizacion: serverTimestamp(),
+            caracteristicas: getCaracteristicasPorArea(area, i)
+        };
+        
+        // Guardar en Firebase
+        const docRef = await addDoc(collection(db, "camas"), cama);
+        camasEjemplo.push({ id: docRef.id, ...cama });
+    }
+    
+    return camasEjemplo;
+}
+
+function getNumCamasPorArea(area) {
+    const config = {
+        'QUIROFANO': 4,
+        'UCI': 8,
+        'HOSPITALIZACION': 15,
+        'REHABILITACION': 6,
+        'OBSERVACION': 5,
+        'URGENCIAS': 10,
+        'PEDIATRIA': 8,
+        'MATERNIDAD': 6
+    };
+    return config[area] || 8;
+}
+
+function getNombreArea(area) {
+    const nombres = {
+        'QUIROFANO': 'Quirófano',
+        'UCI': 'UCI Cama',
+        'HOSPITALIZACION': 'Habitación',
+        'REHABILITACION': 'Camilla Rehab',
+        'OBSERVACION': 'Camilla Obs',
+        'URGENCIAS': 'Camilla Urg',
+        'PEDIATRIA': 'Cuna',
+        'MATERNIDAD': 'Cama Maternidad'
+    };
+    return nombres[area] || area;
+}
+
+function getCaracteristicasPorArea(area, index) {
+    const caracteristicas = {
+        monitor: false,
+        ventilador: false,
+        oxigeno: false,
+        aspirador: false
+    };
+    
+    switch(area) {
+        case 'UCI':
+            caracteristicas.monitor = true;
+            caracteristicas.ventilador = index % 2 === 0;
+            caracteristicas.oxigeno = true;
+            caracteristicas.aspirador = true;
+            break;
+        case 'QUIROFANO':
+            caracteristicas.monitor = true;
+            caracteristicas.ventilador = true;
+            caracteristicas.oxigeno = true;
+            caracteristicas.aspirador = true;
+            break;
+        case 'URGENCIAS':
+            caracteristicas.monitor = index % 3 === 0;
+            caracteristicas.oxigeno = true;
+            break;
+        default:
+            caracteristicas.oxigeno = index % 4 === 0;
+    }
+    
+    return caracteristicas;
+}
+
+// Mostrar grid de camas
+function mostrarGridCamas(camas) {
+    const grid = document.getElementById('grid-camas');
+    grid.innerHTML = '';
+    
+    camas.forEach(cama => {
+        const col = document.createElement('div');
+        col.className = 'col-md-3 col-sm-6 mb-3';
+        
+        let claseCama = 'cama-card card h-100 ';
+        let icono = '🛏️';
+        let estadoTexto = '';
+        let puedeSeleccionar = false;
+        
+        switch(cama.estado) {
+            case 'DISPONIBLE':
+                claseCama += 'disponible';
+                icono = '🟢';
+                estadoTexto = 'DISPONIBLE';
+                puedeSeleccionar = true;
+                break;
+            case 'OCUPADA':
+                claseCama += 'ocupada';
+                icono = '🔴';
+                estadoTexto = 'OCUPADA';
+                puedeSeleccionar = false;
+                break;
+            case 'MANTENIMIENTO':
+                claseCama += 'mantenimiento';
+                icono = '🟡';
+                estadoTexto = 'MANTENIMIENTO';
+                puedeSeleccionar = false;
+                break;
+        }
+        
+        // Verificar si esta cama está seleccionada
+        if (cama.id === window.camaSeleccionadaId) {
+            claseCama += ' seleccionada';
+        }
+        
+        // Botón de liberar para camas ocupadas
+        let botonLiberar = '';
+        if (cama.estado === 'OCUPADA') {
+            botonLiberar = `
+                <button class="btn btn-sm btn-warning mt-2 w-100 liberar-cama-btn" onclick="event.stopPropagation(); liberarCama('${cama.id}', '${cama.nombre}')">
+                    <i class="fas fa-unlock-alt me-1"></i> Liberar
+                </button>
+            `;
+        }
+        
+        col.innerHTML = `
+            <div class="${claseCama}" onclick="${puedeSeleccionar ? `seleccionarCama('${cama.id}', '${cama.nombre}')` : ''}">
+                <div class="card-body text-center p-3">
+                    <div class="fs-1 mb-2">${icono}</div>
+                    <h6 class="card-title fw-bold">${cama.nombre}</h6>
+                    <span class="badge ${cama.estado === 'DISPONIBLE' ? 'bg-success' : cama.estado === 'OCUPADA' ? 'bg-danger' : 'bg-warning'}">
+                        ${estadoTexto}
+                    </span>
+                    ${cama.caracteristicas ? `
+                        <div class="mt-2 small">
+                            ${cama.caracteristicas.monitor ? '<span class="badge bg-info me-1">📊 Monitor</span>' : ''}
+                            ${cama.caracteristicas.oxigeno ? '<span class="badge bg-info me-1">💨 O2</span>' : ''}
+                            ${cama.caracteristicas.ventilador ? '<span class="badge bg-info">💨 Vent</span>' : ''}
+                        </div>
+                    ` : ''}
+                    ${botonLiberar}
+                </div>
+            </div>
+        `;
+        
+        grid.appendChild(col);
+    });
+}
+
+// Seleccionar cama
+window.camaSeleccionadaId = null;
+window.camaSeleccionadaNombre = null;
+
+window.seleccionarCama = function(camaId, camaNombre) {
+    window.camaSeleccionadaId = camaId;
+    window.camaSeleccionadaNombre = camaNombre;
+    
+    // Actualizar visualización
+    mostrarGridCamas(camasActuales);
+    
+    // Mostrar mensaje
+    document.getElementById('info-paciente-seleccionado').innerHTML = `
+        <i class="fas fa-info-circle me-2"></i>
+        <strong>Paciente:</strong> ${pacienteParaCama.nombre} | 
+        <strong>Cama seleccionada:</strong> ${camaNombre}
+        <button class="btn btn-sm btn-success float-end" onclick="asignarCamaPaciente()">
+            <i class="fas fa-check-circle me-1"></i> Confirmar Asignación
+        </button>
+    `;
+}
+
+// Asignar cama a paciente
+window.asignarCamaPaciente = async function() {
+    if (!pacienteParaCama) {
+        Swal.fire({
+            icon: 'warning',
+            title: 'Sin paciente',
+            text: 'Primero seleccione un paciente'
+        });
+        return;
+    }
+    
+    if (!window.camaSeleccionadaId) {
+        Swal.fire({
+            icon: 'warning',
+            title: 'Sin cama',
+            text: 'Seleccione una cama disponible'
+        });
+        return;
+    }
+    
+    const area = document.getElementById('selector-area').value;
+    
+    Swal.fire({
+        title: '¿Confirmar asignación?',
+        html: `
+            <p><strong>Paciente:</strong> ${pacienteParaCama.nombre}</p>
+            <p><strong>Cama:</strong> ${window.camaSeleccionadaNombre}</p>
+            <p><strong>Área:</strong> ${document.getElementById('selector-area').options[document.getElementById('selector-area').selectedIndex].text}</p>
+        `,
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonText: 'Sí, asignar',
+        cancelButtonText: 'Cancelar'
+    }).then(async (result) => {
+        if (result.isConfirmed) {
+            try {
+                // Actualizar cama
+                await updateDoc(doc(db, "camas", window.camaSeleccionadaId), {
+                    estado: 'OCUPADA',
+                    paciente_actual: pacienteParaCama.id,
+                    ultima_actualizacion: serverTimestamp()
+                });
+                
+                // Actualizar paciente
+                await updateDoc(doc(db, "pacientes", pacienteParaCama.id), {
+                    cama_asignada: window.camaSeleccionadaNombre,
+                    area_actual: area,
+                    ubicacion_actual: area,
+                    fecha_ingreso_area: serverTimestamp(),
+                    historial_ubicaciones: arrayUnion({
+                        area: area,
+                        cama: window.camaSeleccionadaNombre,
+                        fecha: new Date().toISOString(),
+                        tipo: 'ASIGNACION'
+                    })
+                });
+                
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Cama asignada',
+                    text: 'La cama ha sido asignada correctamente',
+                    timer: 1500
+                });
+                
+                // Resetear selección
+                pacienteParaCama = null;
+                window.camaSeleccionadaId = null;
+                document.getElementById('info-paciente-seleccionado').style.display = 'none';
+                
+                // Recargar camas
+                cargarCamasPorArea();
+                
+                // Refrescar búsqueda
+                buscarInforme();
+                
+            } catch (error) {
+                console.error("Error al asignar cama:", error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'No se pudo asignar la cama'
+                });
+            }
+        }
+    });
+}
+
+// --- FUNCIÓN PARA LIBERAR CAMA MANUALMENTE ---
+window.liberarCama = async function(camaId, camaNombre) {
+    Swal.fire({
+        title: '¿Liberar cama?',
+        text: `La cama ${camaNombre} será marcada como disponible`,
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#28a745',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Sí, liberar',
+        cancelButtonText: 'Cancelar'
+    }).then(async (result) => {
+        if (result.isConfirmed) {
+            try {
+                // Obtener la cama actual
+                const camaRef = doc(db, "camas", camaId);
+                const camaSnap = await getDoc(camaRef);
+                const camaData = camaSnap.data();
+                
+                // Si había un paciente asignado, actualizar su registro
+                if (camaData.paciente_actual && camaData.paciente_actual !== 'paciente_ejemplo') {
+                    const pacienteRef = doc(db, "pacientes", camaData.paciente_actual);
+                    await updateDoc(pacienteRef, {
+                        cama_asignada: null,
+                        area_actual: null,
+                        observaciones: arrayUnion({
+                            fecha: new Date().toISOString(),
+                            accion: 'Cama liberada manualmente'
+                        })
+                    });
+                }
+                
+                // Liberar la cama
+                await updateDoc(camaRef, {
+                    estado: 'DISPONIBLE',
+                    paciente_actual: null,
+                    ultima_actualizacion: serverTimestamp()
+                });
+                
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Cama liberada',
+                    text: 'La cama ahora está disponible',
+                    timer: 1500
+                });
+                
+                // Recargar camas
+                cargarCamasPorArea();
+                
+                // Refrescar búsqueda
+                buscarInforme();
+                
+            } catch (error) {
+                console.error("Error al liberar cama:", error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'No se pudo liberar la cama'
+                });
+            }
+        }
+    });
+}
+
+// --- FUNCIÓN PARA CAMBIO RÁPIDO DE ESTADO (CON LIBERACIÓN DE CAMA) ---
 window.cambiarEstadoRapido = async function(idPaciente, nuevoEstado, textoEstado) {
     if (!confirm(`¿Cambiar estado del paciente a "${textoEstado}"?`)) {
         return;
     }
     
     try {
-        await updateDoc(doc(db, "pacientes", idPaciente), {
+        // Primero, obtener el paciente para conocer su cama asignada
+        const pacienteRef = doc(db, "pacientes", idPaciente);
+        const pacienteSnap = await getDoc(pacienteRef);
+        const pacienteData = pacienteSnap.data();
+        
+        // Preparar actualización del paciente
+        const updateData = {
             ubicacion_actual: nuevoEstado,
             estado: nuevoEstado === 'ALTA' ? 'completado' : 'proceso',
             fecha_ultima_actualizacion: serverTimestamp()
-        });
+        };
         
-        alert(`✅ Estado actualizado a "${textoEstado}"`);
+        // Si es ALTA, agregar fecha de alta
+        if (nuevoEstado === 'ALTA') {
+            updateData.fecha_alta = serverTimestamp();
+        }
+        
+        // Actualizar paciente
+        await updateDoc(pacienteRef, updateData);
+        
+        // SI ES ALTA Y TIENE CAMA ASIGNADA, LIBERAR LA CAMA
+        if (nuevoEstado === 'ALTA' && pacienteData.cama_asignada) {
+            // Buscar la cama por el nombre
+            const camasQuery = query(collection(db, "camas"), where("nombre", "==", pacienteData.cama_asignada));
+            const camasSnapshot = await getDocs(camasQuery);
+            
+            if (!camasSnapshot.empty) {
+                const camaDoc = camasSnapshot.docs[0];
+                await updateDoc(doc(db, "camas", camaDoc.id), {
+                    estado: 'DISPONIBLE',
+                    paciente_actual: null,
+                    ultima_actualizacion: serverTimestamp()
+                });
+                console.log("✅ Cama liberada automáticamente");
+            }
+        }
+        
+        alert(`✅ Estado actualizado a "${textoEstado}"${nuevoEstado === 'ALTA' && pacienteData.cama_asignada ? ' y cama liberada' : ''}`);
+        
         // Refrescar la búsqueda
         buscarInforme();
+        
+        // Si el sistema de camas está visible, recargar las camas
+        if (document.getElementById('sistema-camas').style.display === 'block') {
+            cargarCamasPorArea();
+        }
         
     } catch (error) {
         console.error("Error al cambiar estado:", error);
@@ -600,7 +1273,7 @@ window.abrirModalActualizacion = function(idPaciente, nombrePaciente, estadoActu
     modal.show();
 }
 
-// --- FUNCIÓN PARA GUARDAR CAMBIO DE ESTADO DESDE MODAL ---
+// --- FUNCIÓN PARA GUARDAR CAMBIO DE ESTADO DESDE MODAL (CON LIBERACIÓN DE CAMA) ---
 window.guardarCambioEstado = async function() {
     const idPaciente = document.getElementById('pacienteIdActualizar').value;
     const nuevoEstado = document.getElementById('nuevoEstadoSelect').value;
@@ -614,6 +1287,11 @@ window.guardarCambioEstado = async function() {
     }
     
     try {
+        // Obtener paciente actual
+        const pacienteRef = doc(db, "pacientes", idPaciente);
+        const pacienteSnap = await getDoc(pacienteRef);
+        const pacienteData = pacienteSnap.data();
+        
         // Determinar estado interno
         let estadoInterno = 'proceso';
         if (nuevoEstado === 'ALTA') {
@@ -644,16 +1322,39 @@ window.guardarCambioEstado = async function() {
             datosActualizacion.fecha_alta = serverTimestamp();
         }
         
-        await updateDoc(doc(db, "pacientes", idPaciente), datosActualizacion);
+        // Actualizar paciente
+        await updateDoc(pacienteRef, datosActualizacion);
+        
+        // SI ES ALTA Y TIENE CAMA ASIGNADA, LIBERAR LA CAMA
+        if (nuevoEstado === 'ALTA' && pacienteData.cama_asignada) {
+            // Buscar la cama por el nombre
+            const camasQuery = query(collection(db, "camas"), where("nombre", "==", pacienteData.cama_asignada));
+            const camasSnapshot = await getDocs(camasQuery);
+            
+            if (!camasSnapshot.empty) {
+                const camaDoc = camasSnapshot.docs[0];
+                await updateDoc(doc(db, "camas", camaDoc.id), {
+                    estado: 'DISPONIBLE',
+                    paciente_actual: null,
+                    ultima_actualizacion: serverTimestamp()
+                });
+                console.log("✅ Cama liberada automáticamente desde modal");
+            }
+        }
         
         // Cerrar modal
         const modal = bootstrap.Modal.getInstance(document.getElementById('modalActualizarEstado'));
         modal.hide();
         
-        alert(`✅ Estado actualizado correctamente a: ${nuevoEstado}`);
+        alert(`✅ Estado actualizado correctamente a: ${nuevoEstado}${nuevoEstado === 'ALTA' && pacienteData.cama_asignada ? ' y cama liberada' : ''}`);
         
         // Refrescar la búsqueda
         buscarInforme();
+        
+        // Si el sistema de camas está visible, recargar las camas
+        if (document.getElementById('sistema-camas').style.display === 'block') {
+            cargarCamasPorArea();
+        }
         
     } catch (error) {
         console.error("Error al guardar cambio de estado:", error);
@@ -786,6 +1487,14 @@ function getBadgeClassByNivel(nivel) {
     }
 }
 
+// Función auxiliar para arrayUnion (ya que Firestore lo necesita)
+function arrayUnion(element) {
+    return {
+        type: 'array-union',
+        elements: [element]
+    };
+}
+
 // --- INICIALIZAR ---
 document.addEventListener('DOMContentLoaded', async function() {
     // Cargar listado de pacientes
@@ -804,7 +1513,6 @@ document.addEventListener('DOMContentLoaded', async function() {
 <!-- ============================
      MODO OSCURO
 ============================ -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
   const body = document.body;
   const btn = document.getElementById("darkModeBtn");
