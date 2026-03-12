@@ -153,11 +153,23 @@
 </div>
 
 <!-- ============================
+     CONFIGURACIÓN DE IMPORTACIONES
+============================ -->
+<script type="importmap">
+  {
+    "imports": {
+      "firebase/app": "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js",
+      "firebase/firestore": "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js"
+    }
+  }
+</script>
+
+<!-- ============================
      FIREBASE
 ============================ -->
 <script type="module">
     import { db } from './firebase-config.js';
-    import { collection, query, where, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+    import { collection, query, where, onSnapshot } from "firebase/firestore";
 
     const listaDiv = document.getElementById('lista-pacientes');
     const refreshStatus = document.getElementById('refresh-status');
