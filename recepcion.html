@@ -502,6 +502,36 @@ window.registrarPaciente = async function(nivel) {
     }
 }
 
+// --- FUNCIÓN PARA REINICIAR EL SISTEMA DE CAMAS ---
+function reiniciarSistemaCamas() {
+    // Limpiar variables globales
+    window.camaSeleccionadaId = null;
+    window.camaSeleccionadaNombre = null;
+    
+    // Limpiar el grid de camas
+    const grid = document.getElementById('grid-camas');
+    grid.innerHTML = `
+        <div class="text-center py-5">
+            <i class="fas fa-hospital fa-3x text-muted mb-3"></i>
+            <p class="text-muted">Seleccione un área para ver las camas disponibles</p>
+        </div>
+    `;
+    
+    // Resetear contadores
+    document.getElementById('camas-disponibles').textContent = '0 disponibles';
+    document.getElementById('camas-ocupadas').textContent = '0 ocupadas';
+    document.getElementById('camas-totales').textContent = '0 totales';
+    
+    // Resetear selector de área
+    document.getElementById('selector-area').value = '';
+    document.getElementById('area-seleccionada').textContent = 'Seleccione área';
+    
+    // Ocultar info del paciente si no hay paciente seleccionado
+    if (!pacienteParaCama) {
+        document.getElementById('info-paciente-seleccionado').style.display = 'none';
+    }
+}
+
 // --- FUNCION BUSCAR PACIENTE (FIREBASE) ---
 window.buscarInforme = async function() {
     const texto = document.getElementById('busquedaInforme').value.trim().toLowerCase();
@@ -511,6 +541,11 @@ window.buscarInforme = async function() {
         div.innerHTML = '<div class="alert alert-warning">Por favor, ingrese o seleccione un nombre de paciente.</div>';
         return; 
     }
+
+    // REINICIAR SISTEMA DE CAMAS AL HACER NUEVA BÚSQUEDA
+    pacienteParaCama = null;
+    reiniciarSistemaCamas();
+    document.getElementById('sistema-camas').style.display = 'none';
 
     div.innerHTML = '<div class="text-center"><div class="spinner-border text-primary"></div> Buscando pacientes...</div>';
 
@@ -735,10 +770,25 @@ window.buscarInforme = async function() {
 
 // Mostrar sistema de camas para un paciente
 window.mostrarSistemaCamas = function(idPaciente, nombrePaciente) {
+    // REINICIAR TODO EL SISTEMA DE CAMAS PRIMERO
+    reiniciarSistemaCamas();
+    
+    // Establecer el nuevo paciente
     pacienteParaCama = { id: idPaciente, nombre: nombrePaciente };
+    
+    // Mostrar el sistema de camas
     document.getElementById('sistema-camas').style.display = 'block';
     document.getElementById('nombre-paciente-cama').textContent = nombrePaciente;
     document.getElementById('info-paciente-seleccionado').style.display = 'block';
+    
+    // Resetear el mensaje de información
+    document.getElementById('info-paciente-seleccionado').innerHTML = `
+        <i class="fas fa-info-circle me-2"></i>
+        <strong>Paciente seleccionado:</strong> ${nombrePaciente}
+        <button class="btn btn-sm btn-success float-end" onclick="asignarCamaPaciente()">
+            <i class="fas fa-check-circle me-1"></i> Confirmar Asignación
+        </button>
+    `;
     
     // Scroll hacia el sistema de camas
     document.getElementById('sistema-camas').scrollIntoView({ behavior: 'smooth' });
